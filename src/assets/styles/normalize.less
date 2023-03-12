@@ -1,0 +1,98 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+body,
+#app {
+  height: 100%;
+  overflow: auto;
+  font-size: 16px;
+  background-color: #f4f5f9;
+  font-family: "PingFangSC";
+  color: #131936;
+}
+
+body,
+ul,
+h1,
+h3,
+h4,
+p,
+dl,
+dd {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px; /* 纵向滚动条*/
+  height: 6px; /* 横向滚动条 */
+  background-color: #fff;
+}
+
+/*定义滚动条轨道 内阴影*/
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  background-color: #fff;
+}
+
+/*定义滑块 内阴影*/
+::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  background-color: #ddd;
+  border-radius: 10px;
+}
+
+ul {
+  list-style: none;
+}
+
+@p-m: {
+  pr: padding-right;
+  pl: padding-left;
+  pt: padding-top;
+  pb: padding-bottom;
+  mr: margin-right;
+  ml: margin-left;
+  mt: margin-top;
+  mb: margin-bottom;
+};
+
+@size: {
+  5: 5px;
+  10: 10px;
+  15: 15px;
+  20: 20px;
+};
+
+each(@p-m, .(@value,@key){
+  each(@size,.(@pxSize,@pxKey){
+    .@{key}-@{pxKey} {
+      @{value}: @pxSize;
+    }
+  })
+});
+
+.br-5 {
+  border-radius: 5px;
+}
+
+.br-10 {
+  border-radius: 10px;
+}
+
+.flex-bt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

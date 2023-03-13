@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 import {
   AFanTiAxiosRequestConfig,
   requestType,
@@ -11,7 +11,7 @@ const service = axios.create({
 });
 
 service.interceptors.request.use(
-  (config: AFanTiAxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig<AFanTiAxiosRequestConfig>) => {
     // if(config.isLoading) {
     //   添加加载动画
     // }

@@ -5,19 +5,19 @@
         <img src="@/assets/imgs/向右.png" alt="" />
       </div>
       <section class="weather-wrapper">
-        <span class="time"
-          >{{ weatherTimeInfo.hour }}:{{ weatherTimeInfo.minute }}</span
-        >
+        <span class="time">{{ weatherTimeInfo.hour }}:{{ weatherTimeInfo.minute }}</span>
         <span class="weather">
           <img src="@/assets/imgs/太阳.png" width="30" alt="" />
           {{ weatherTimeInfo.temperature }}℃ &nbsp; {{ weatherTimeInfo.path }}
         </span>
       </section>
     </div>
-    <form :class="{ 'form-active': loginActive }">
-      <div>form-item</div>
-      <div>form-item</div>
-      <div>form-item</div>
+    <form :class="{ 'form-active': loginActive }" @submit="submit">
+      <h5><img src="@/assets/favicon.ico" alt="">资产管理系统</h5>
+      <input type="text" placeholder="手机号/邮箱 账号" @input="accountChange" autocomplete="false">
+      <input type="password" placeholder="登录密码" @input="passwordChange">
+      <button>登录</button>
+      <span @click="loginActive = false">取消</span>
     </form>
   </div>
 </template>
@@ -27,6 +27,31 @@ import { CommonApi } from '@/api/common'
 import { onUnmounted, reactive, ref } from 'vue'
 
 const loginActive = ref(false)
+
+const useLogin = () => {
+  const loginForm = reactive({
+    account: '',
+    password: ''
+  })
+  const accountChange = (e: Event) => {
+    console.log((e.target as HTMLInputElement).value)
+  }
+  const passwordChange = (e: Event) => {
+    console.log((e.target as HTMLInputElement).value)
+  }
+  const submit = (e:Event) => {
+    console.log('submit')
+    e.preventDefault()
+  }
+  return {
+    loginForm,
+    accountChange,
+    passwordChange,
+    submit
+  }
+}
+
+const { accountChange, passwordChange, submit } = useLogin()
 
 const useWeather = () => {
   const date = new Date()
@@ -73,18 +98,90 @@ onUnmounted(() => clearInterval(timeInterval))
   position: relative;
   width: 100%;
   height: 100%;
+
   form {
     position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     left: 50%;
     top: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%) scale(0);
     z-index: 40;
-    transform: scale(0);
     transition: all 0.4s;
+    background-color: #ecf0f3;
+    box-shadow: 10px 10px 10px #d1d9e6, -10px -10px 10px #f9f9f9;
+    border-radius: 12px;
+    padding: 0 25px 25px 25px;
+
+    h5 {
+      display: flex;
+      align-items: center;
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 3;
+      color: #181818;
+    }
+
+    input {
+      width: 350px;
+      height: 40px;
+      margin: 4px 0;
+      padding-left: 25px;
+      font-size: 13px;
+      letter-spacing: 0.15px;
+      border: none;
+      outline: none;
+      font-family: "Montserrat", sans-serif;
+      background-color: #ecf0f3;
+      transition: 0.25s ease;
+      border-radius: 8px;
+      box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #f9f9f9;
+      transition: all .5s;
+    }
+
+    input:focus {
+      box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #c9c8c8;
+    }
+
+    button {
+      width: 180px;
+      height: 40px;
+      border-radius: 25px;
+      margin-top: 30px;
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 1.15px;
+      background-color: #4B70E2;
+      color: #f9f9f9;
+      box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #f9f9f9;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+    span {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #9c9a9a;
+      cursor: pointer;
+      width: 60px;
+      text-align: center;
+      border-bottom: 1px solid #979494;
+      padding-bottom: 3px;
+
+      &:hover {
+        color: #ffffff;
+        border-bottom: 1px solid #fff;
+      }
+    }
   }
-  .form-active{
-    transform: scale(1);
+
+  .form-active {
+    transform: translateX(-50%) translateY(-50%) scale(1);
   }
+
   .login-wrapper {
     position: relative;
     display: flex;
@@ -97,6 +194,7 @@ onUnmounted(() => clearInterval(timeInterval))
     background-size: cover;
     transition: all 0.4s;
     z-index: 2;
+
     .weather-wrapper {
       padding: 20px;
       position: absolute;
@@ -109,6 +207,7 @@ onUnmounted(() => clearInterval(timeInterval))
       overflow: hidden;
       border-radius: 20px;
       z-index: 10;
+
       &::before {
         content: '';
         position: absolute;
@@ -123,10 +222,12 @@ onUnmounted(() => clearInterval(timeInterval))
         filter: blur(10px);
         z-index: -1;
       }
+
       .time {
         font-size: 60px;
         margin-right: 20px;
       }
+
       .weather {
         display: flex;
         align-items: center;
@@ -134,6 +235,7 @@ onUnmounted(() => clearInterval(timeInterval))
         text-align: center;
       }
     }
+
     .login-button {
       position: absolute;
       bottom: 20px;
@@ -141,24 +243,30 @@ onUnmounted(() => clearInterval(timeInterval))
       transform: translateX(-50%);
       cursor: pointer;
       width: 100px;
+
       &:hover {
         background-color: rgba(174, 168, 168, 0.1);
       }
+
       text-align: center;
       backdrop-filter: blur(3px);
       background-color: rgba(106, 103, 103, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 100px;
       box-shadow: 2px 2px 2px rgb(0 0 0 / 10%);
+
       img {
         width: 40px;
       }
     }
+
     .login-button-hover:not(:hover) {
       animation: bounce 3s infinite;
       animation-delay: 3s;
     }
+
     @keyframes bounce {
+
       6.66%,
       17.66%,
       33.33% {
@@ -183,6 +291,7 @@ onUnmounted(() => clearInterval(timeInterval))
       }
     }
   }
+
   .login-active {
     transform-origin: center;
     transform: scale(1.8);

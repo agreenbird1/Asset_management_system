@@ -262,7 +262,7 @@ onUnmounted(() => clearInterval(timeInterval))
 
     .login-button-hover:not(:hover) {
       animation: bounce 3s infinite;
-      animation-delay: 3s;
+      animation-delay: 2s;
     }
 
     @keyframes bounce {

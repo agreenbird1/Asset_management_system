@@ -6,12 +6,21 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
+      redirect: '/my-home',
       component: () => import('@/views/Home/index.vue'),
-    },{
+      children: [
+        {
+          path: 'my-home',
+          name: 'MyHome',
+          component: () => import('@/views/MyHome/index.vue'),
+        },
+      ],
+    },
+    {
       path: '/login',
       name: 'Login',
       component: () => import('@/views/Login/index.vue'),
-    }
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition

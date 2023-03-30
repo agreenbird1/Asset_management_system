@@ -19,7 +19,7 @@ export const asideAuthority = [
     index: 1,
     label: '我的资产',
     icon: AlbumsOutline,
-    route: '/my-home',
+    route: '/my-assets',
   },
   {
     index: 2,

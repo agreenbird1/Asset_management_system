@@ -2,7 +2,7 @@
   <div class="df h100">
     <div class="projects-section">
       <div class="projects-section-header">
-        <p>我的申请</p>
+        <p>我的申请 <span @click="requestModal = true">去申请</span></p>
         <div class="state">
           <label>状态：</label>
           <span
@@ -20,11 +20,53 @@
           :data="data"
           :pagination="pagination"
           flex-height
-          style="height: 100%;"
+          style="height: 100%"
         />
       </div>
     </div>
     <ProfileSection />
+
+    <n-modal v-model:show="requestModal">
+      <n-card
+        style="width: 700px"
+        title="资产申请"
+        :bordered="false"
+        size="huge"
+        role="dialog"
+        aria-modal="true"
+      >
+        <template #header-extra>
+          <n-icon
+            class="cp"
+            size="20"
+            @click="requestModal = false"
+            :component="Close"
+          ></n-icon>
+        </template>
+        <div class="df jcsb">
+          <n-tree
+            style="width: 30%"
+            block-line
+            :data="treeData"
+            expand-on-click
+            selectable
+          />
+          <section class="modal-section">
+            <AssetItem />
+            <AssetItem />
+            <AssetItem />
+            <AssetItem />
+            <AssetItem />
+          </section>
+        </div>
+        <template #footer>
+          <div class="modal-footer df jcsb">
+            <span> 已选择资产：4 </span>
+            <n-button strong secondary type="info" round> 确认 </n-button>
+          </div>
+        </template>
+      </n-card>
+    </n-modal>
   </div>
 </template>
 
@@ -32,6 +74,9 @@
 import { DataTableColumns, NButton, useMessage } from 'naive-ui'
 import { h, reactive, ref } from 'vue'
 import ProfileSection from './components/ProfileSection.vue'
+import { TreeOption } from 'naive-ui'
+import { Close } from '@vicons/ionicons5'
+import AssetItem from './components/AssetItem.vue'
 
 const message = useMessage()
 const searchInfo = ref({
@@ -81,13 +126,15 @@ const createColumns = ({
     {
       title: '申请数量',
       key: 'length',
-    },{
+    },
+    {
       title: '申请日期',
       key: 'date',
-    },{
+    },
+    {
       title: '申请状态',
       key: 'state',
-    }
+    },
   ]
 }
 
@@ -122,6 +169,20 @@ const pagination = reactive({
     pagination.page = 1
   },
 })
+
+const requestModal = ref(false)
+const treeData = ref<TreeOption[]>([
+  {
+    label: 'data1',
+    key: 1,
+    value: 1,
+  },
+  {
+    label: 'data2',
+    key: 2,
+    value: 2,
+  },
+])
 </script>
 
 <style scoped lang="less">
@@ -139,6 +200,8 @@ const pagination = reactive({
     padding: 10px 20px;
     background-color: var(--projects-section);
     p {
+      display: flex;
+      justify-content: space-between;
       font-size: 24px;
       line-height: 32px;
       font-weight: 700;
@@ -146,6 +209,17 @@ const pagination = reactive({
       margin: 0;
       margin-bottom: 20px;
       color: var(--main-color);
+      span {
+        display: inline-block;
+        height: 24px;
+        font-size: 14px;
+        padding: 0 10px;
+        line-height: 24px;
+        border: 1px solid var(--main-color);
+        font-weight: normal;
+        cursor: pointer;
+        border-radius: 5px;
+      }
     }
     .state {
       label {
@@ -208,5 +282,12 @@ const pagination = reactive({
     padding: 8px;
     transition: 0.2s;
   }
+}
+
+.modal-section {
+  width: 70%;
+  border-left: 1px solid #eee;
+  height: 360px;
+  overflow: auto;
 }
 </style>

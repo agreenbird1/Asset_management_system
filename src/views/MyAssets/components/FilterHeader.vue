@@ -2,7 +2,10 @@
   <header>
     <div class="header-info df aic jcsb">
       <div>当前资产数量：<span class="num">4</span></div>
-      <n-button quaternary color="#6a83d0"> 显示全部 </n-button>
+      <div>
+        <n-button quaternary color="#6a83d0"> 显示全部 </n-button>
+        <n-button quaternary color="#6a83d0"> 资产交接 </n-button>
+      </div>
     </div>
     <div class="filter-item-list">
       <div

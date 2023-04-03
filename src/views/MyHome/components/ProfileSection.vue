@@ -7,18 +7,8 @@
         <span>Aybüke C.</span>
       </button>
       <div class="profile-options df aic">
-        <n-popover trigger="hover" :show-arrow="false" placement="bottom">
-          <template #trigger>
-            <img src="@/assets/imgs/修改密码.png" class="cp mr-5" width="22" />
-          </template>
-          <span class="cp bg-hover">修改密码</span>
-        </n-popover>
-        <n-popover trigger="hover" :show-arrow="false" placement="bottom">
-          <template #trigger>
-            <img src="@/assets/imgs/退出.png" class="cp" width="25" />
-          </template>
-          <span class="cp bg-hover">退出</span>
-        </n-popover>
+        <ChangePassword />
+        <Logout />
       </div>
     </div>
     <p>中后台项目组</p>
@@ -28,7 +18,8 @@
 </template>
 
 <script setup lang="ts">
-
+import ChangePassword from './ChangePassword.vue'
+import Logout from './Logout.vue'
 </script>
 
 <style scoped lang="less">

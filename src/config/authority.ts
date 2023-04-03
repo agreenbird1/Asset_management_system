@@ -22,34 +22,34 @@ export const asideAuthority = [
     route: '/my-assets',
   },
   {
-    index: 2,
+    index: 3,
     label: '资产分类',
     icon: BarcodeOutline,
-    route: '/my-home',
+    route: '/classification',
   },
   {
     index: 2,
-    label: '企业成员',
+    label: '企业/部门成员',
     icon: ColorFilterOutline,
-    route: '/my-home',
+    route: '/enterprise-member',
   },
   {
     index: 2,
     label: '资产监控',
     icon: RecordingOutline,
-    route: '/my-home',
+    route: '/asset-monitoring',
   },
   {
     index: 2,
     label: '企业资产管理',
     icon: EllipsisVerticalCircleOutline,
-    route: '/my-home',
+    route: '/enterprise-assets',
   },
   {
-    index: 3,
+    index: 4,
     label: '企业管理',
     icon: AppsOutline,
-    route: '/my-home',
+    route: '/enterprise-manage',
   },
 ]
 

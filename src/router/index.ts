@@ -13,10 +13,36 @@ const router = createRouter({
           path: 'my-home',
           name: 'MyHome',
           component: () => import('@/views/MyHome/index.vue'),
-        },{
+        },
+        {
           path: 'my-assets',
           name: 'MyAssets',
           component: () => import('@/views/MyAssets/index.vue'),
+        },
+        {
+          path: 'enterprise-member',
+          name: 'EnterpriseMember',
+          component: () => import('@/views/EnterpriseMember/index.vue'),
+        },
+        {
+          path: 'classification',
+          name: 'Classification',
+          component: () => import('@/views/Classification/index.vue'),
+        },
+        {
+          path: 'enterprise-assets',
+          name: 'EnterpriseAssets',
+          component: () => import('@/views/EnterpriseAssets/index.vue'),
+        },
+        {
+          path: 'asset-monitoring',
+          name: 'AssetMonitoring',
+          component: () => import('@/views/AssetMonitoring/index.vue'),
+        },
+        {
+          path: 'enterprise-manage',
+          name: 'EnterpriseManage',
+          component: () => import('@/views/EnterpriseManage/index.vue'),
         },
       ],
     },

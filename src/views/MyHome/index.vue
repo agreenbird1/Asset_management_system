@@ -26,47 +26,30 @@
     </div>
     <ProfileSection />
 
-    <n-modal v-model:show="requestModal">
-      <n-card
-        style="width: 700px"
-        title="资产申请"
-        :bordered="false"
-        size="huge"
-        role="dialog"
-        aria-modal="true"
-      >
-        <template #header-extra>
-          <n-icon
-            class="cp"
-            size="20"
-            @click="requestModal = false"
-            :component="Close"
-          ></n-icon>
-        </template>
-        <div class="df jcsb">
-          <n-tree
-            style="width: 30%"
-            block-line
-            :data="treeData"
-            expand-on-click
-            selectable
-          />
-          <section class="modal-section">
-            <AssetItem />
-            <AssetItem />
-            <AssetItem />
-            <AssetItem />
-            <AssetItem />
-          </section>
+    <Dialog v-model="requestModal" title="资产申请">
+      <div class="df jcsb">
+        <n-tree
+          style="width: 30%"
+          block-line
+          :data="treeData"
+          expand-on-click
+          selectable
+        />
+        <section class="modal-section">
+          <AssetItem />
+          <AssetItem />
+          <AssetItem />
+          <AssetItem />
+          <AssetItem />
+        </section>
+      </div>
+      <template #footer>
+        <div class="modal-footer df jcsb">
+          <span> 已选择资产：4 </span>
+          <n-button strong secondary type="info" round> 确认 </n-button>
         </div>
-        <template #footer>
-          <div class="modal-footer df jcsb">
-            <span> 已选择资产：4 </span>
-            <n-button strong secondary type="info" round> 确认 </n-button>
-          </div>
-        </template>
-      </n-card>
-    </n-modal>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -75,8 +58,8 @@ import { DataTableColumns, NButton, useMessage } from 'naive-ui'
 import { h, reactive, ref } from 'vue'
 import ProfileSection from './components/ProfileSection.vue'
 import { TreeOption } from 'naive-ui'
-import { Close } from '@vicons/ionicons5'
 import AssetItem from './components/AssetItem.vue'
+import Dialog from '@/components/Dialog/index.vue'
 
 const message = useMessage()
 const searchInfo = ref({
@@ -287,7 +270,7 @@ const treeData = ref<TreeOption[]>([
 .modal-section {
   width: 70%;
   border-left: 1px solid #eee;
-  height: 360px;
+  height: 60vh;
   overflow: auto;
 }
 </style>

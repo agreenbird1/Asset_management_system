@@ -22,12 +22,6 @@ export const asideAuthority = [
     route: '/my-assets',
   },
   {
-    index: 3,
-    label: '资产分类',
-    icon: BarcodeOutline,
-    route: '/classification',
-  },
-  {
     index: 2,
     label: '企业/部门成员',
     icon: ColorFilterOutline,

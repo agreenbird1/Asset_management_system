@@ -25,11 +25,6 @@ const router = createRouter({
           component: () => import('@/views/EnterpriseMember/index.vue'),
         },
         {
-          path: 'classification',
-          name: 'Classification',
-          component: () => import('@/views/Classification/index.vue'),
-        },
-        {
           path: 'enterprise-assets',
           name: 'EnterpriseAssets',
           component: () => import('@/views/EnterpriseAssets/index.vue'),

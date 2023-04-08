@@ -22,12 +22,12 @@
       <slot></slot>
       <template #footer>
         <!-- 底部，具有默认的确认失败按钮。外部传入时候会顶替原有 footer slot 内容 -->
-        <slot name="footer">
-          <div class="default-footer">
+        <div class="default-footer">
+          <slot name="footer">
             <n-button class="ml-10" color="#6a83d0"> 确认 </n-button>
             <n-button color="#909399"> 取消 </n-button>
-          </div>
-        </slot>
+          </slot>
+        </div>
       </template>
     </n-card>
   </n-modal>

@@ -1,7 +1,7 @@
 import {
   HomeOutline,
   AlbumsOutline,
-  BarcodeOutline,
+  FileTrayOutline,
   ColorFilterOutline,
   RecordingOutline,
   EllipsisVerticalCircleOutline,
@@ -14,6 +14,12 @@ export const asideAuthority = [
     label: '我的主页',
     icon: HomeOutline,
     route: '/my-home',
+  },
+  {
+    index: 1,
+    label: '审批',
+    icon: FileTrayOutline,
+    route: '/approval',
   },
   {
     index: 1,

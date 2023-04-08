@@ -13,13 +13,42 @@
     </div>
     <p>中后台项目组</p>
     <p>前端工程师</p>
-    <p>个人简介：长得越丑，就越要往台上走。</p>
+    <p class="df aic">
+      <span>个人简介：</span>
+      <div class="fl1">
+        <n-input
+          v-if="showDescription"
+          ref="inputRef"
+          round
+          placeholder="输入简介"
+          @blur="changeDescription"
+          size="small"
+          style="display: inline-block;"
+        />
+        <span v-else @click="startChangeDescription">
+          长得越丑，就越要往台上走。
+        </span>
+      </div>
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import ChangePassword from './ChangePassword.vue'
 import Logout from './Logout.vue'
+import { NInput } from 'naive-ui';
+
+const showDescription = ref(false)
+const inputRef = ref<InstanceType<typeof NInput>>()
+
+const changeDescription = () => {
+  showDescription.value = false
+}
+const startChangeDescription = () => {
+  showDescription.value = true
+  inputRef.value?.focus()
+}
 </script>
 
 <style scoped lang="less">

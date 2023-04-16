@@ -24,8 +24,10 @@
         <!-- 底部，具有默认的确认失败按钮。外部传入时候会顶替原有 footer slot 内容 -->
         <div class="default-footer">
           <slot name="footer">
-            <n-button class="ml-10" color="#6a83d0"> 确认 </n-button>
-            <n-button color="#909399"> 取消 </n-button>
+            <n-button class="ml-10" color="#6a83d0" @click="emits('confirm')">
+              确认
+            </n-button>
+            <n-button color="#909399" @click="emits('cancel')"> 取消 </n-button>
           </slot>
         </div>
       </template>
@@ -47,7 +49,7 @@ const props = withDefaults(
     width: '700px',
   }
 )
-const emits = defineEmits(['update:modelValue'])
+const emits = defineEmits(['update:modelValue', 'confirm', 'cancel'])
 
 const showModal = useVModel(props, 'modelValue', emits)
 </script>

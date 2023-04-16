@@ -20,7 +20,7 @@ export class CategoryApi {
     return request.delete(`/category/${id}`)
   }
   // 更新分类
-  static patchCategory(id: number, name: string) {
+  static updateCategory(id: number, name: string) {
     return request.patch(`/category/${id}`, { name })
   }
   // 获取分类

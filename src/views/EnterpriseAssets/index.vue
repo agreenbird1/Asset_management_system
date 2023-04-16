@@ -21,7 +21,7 @@
       <AddAssetButton />
     </div>
     <main>
-      <ClassifyTree />
+      <ClassifyTree  :type="1" title="添加资产分类" />
       <n-data-table
         class="table"
         :columns="columns"
@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import ClassifyTree from './components/ClassifyTree.vue'
+import ClassifyTree from '@/components/ClassifyTree/ClassifyTree.vue'
 import AddAssetButton from './components/AddAssetButton.vue'
 
 const columns = ref([

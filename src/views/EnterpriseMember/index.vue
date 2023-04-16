@@ -18,7 +18,7 @@
       <n-button color="#6a83d0" size="small"> 查询 </n-button>
     </div>
     <main>
-      <ClassifyTree />
+      <ClassifyTree :type="2" title="添加部门分类" />
       <n-data-table
         class="table"
         :columns="columns"
@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import ClassifyTree from './components/ClassifyTree.vue'
+import ClassifyTree from '@/components/ClassifyTree/ClassifyTree.vue'
 
 const columns = ref([
   {

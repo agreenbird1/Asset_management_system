@@ -9,12 +9,13 @@
       size="huge"
       role="dialog"
       aria-modal="true"
+      :mask-closable="false"
     >
       <template #header-extra>
         <n-icon
           class="cp"
           size="20"
-          @click="showModal = false"
+          @click="closeModal"
           :component="Close"
         ></n-icon>
       </template>
@@ -49,9 +50,13 @@ const props = withDefaults(
     width: '700px',
   }
 )
-const emits = defineEmits(['update:modelValue', 'confirm', 'cancel'])
+const emits = defineEmits(['update:modelValue', 'confirm', 'cancel', 'close'])
 
 const showModal = useVModel(props, 'modelValue', emits)
+const closeModal = () => {
+  showModal.value = false
+  emits('close')
+}
 </script>
 
 <style scoped lang="less">

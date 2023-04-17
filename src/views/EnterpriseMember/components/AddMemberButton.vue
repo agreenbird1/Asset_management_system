@@ -46,9 +46,11 @@
 
       <n-form-item label="头像" path="cover">
         <n-upload
-          action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+          :on-update:file-list="uploadFiles"
           list-type="image-card"
+          :default-upload="false"
           :max="1"
+          :on-remove="() => (formValue.src = '')"
         />
       </n-form-item>
     </n-form>
@@ -58,7 +60,8 @@
 <script setup lang="ts">
 import { CategoryApi, ICategory } from '@/api/category'
 import Dialog from '@/components/Dialog/index.vue'
-import { FormInst, FormRules } from 'naive-ui'
+import { sendSingleFile } from '@/utils/uploadFiles'
+import { FormInst, FormRules, UploadFileInfo } from 'naive-ui'
 import { ref, watch } from 'vue'
 
 interface IForm {
@@ -68,6 +71,7 @@ interface IForm {
   rePassword: string
   categoryId?: number
   description?: string
+  src: string
 }
 
 const dialogVisible = ref(false)
@@ -78,6 +82,7 @@ const formValue = ref<IForm>({
   userName: '',
   password: '',
   rePassword: '',
+  src: '',
 })
 
 const rules: FormRules = {
@@ -117,6 +122,13 @@ const rules: FormRules = {
 }
 
 const categories = ref<ICategory[]>()
+
+const uploadFiles = (files: UploadFileInfo[]) => {
+  files.forEach(async (file) => {
+    await sendSingleFile(file)
+    formValue.value.src = file.url!
+  })
+}
 
 // 每次打开需要重新进行数据请求，防止有新增
 watch(

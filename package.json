@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@juexiao/juexiao-utils": "^3.2.52",
     "@vueuse/core": "^9.13.0",
     "axios": "^1.3.4",
     "pinia": "^2.0.33",

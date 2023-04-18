@@ -77,6 +77,7 @@ type SearchInfo = {
 const message = useMessage()
 const searchInfo = ref<SearchInfo>({
   pageNum: 1,
+  state: 1,
 })
 
 const states: StateItem[] = [

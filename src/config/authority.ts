@@ -44,13 +44,7 @@ export const asideAuthority = [
     label: '企业资产管理',
     icon: EllipsisVerticalCircleOutline,
     route: '/enterprise-assets',
-  },
-  {
-    index: 4,
-    label: '企业管理',
-    icon: AppsOutline,
-    route: '/enterprise-manage',
-  },
+  }
 ]
 
 export type AsideAuthorityItem = typeof asideAuthority[0]

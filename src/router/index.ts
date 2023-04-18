@@ -37,12 +37,7 @@ const router = createRouter({
           path: 'asset-monitoring',
           name: 'AssetMonitoring',
           component: () => import('@/views/AssetMonitoring/index.vue'),
-        },
-        {
-          path: 'enterprise-manage',
-          name: 'EnterpriseManage',
-          component: () => import('@/views/EnterpriseManage/index.vue'),
-        },
+        }
       ],
     },
     {

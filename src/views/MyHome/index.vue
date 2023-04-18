@@ -61,13 +61,25 @@ import { TreeOption } from 'naive-ui'
 import AssetItem from './components/AssetItem.vue'
 import Dialog from '@/components/Dialog/index.vue'
 
+type StateValue = 1 | 2 | 3 | 4 | 5
+
+type StateItem = {
+  label: string
+  value: StateValue
+}
+
+type SearchInfo = {
+  pageNum: number
+  pageSize?: number
+  state?: StateValue
+}
+
 const message = useMessage()
-const searchInfo = ref({
+const searchInfo = ref<SearchInfo>({
   pageNum: 1,
-  state: 1,
 })
 
-const states = [
+const states: StateItem[] = [
   {
     label: '审批中',
     value: 1,
@@ -81,8 +93,12 @@ const states = [
     value: 3,
   },
   {
-    label: '已签收',
+    label: '待签收',
     value: 4,
+  },
+  {
+    label: '已签收',
+    value: 5,
   },
 ]
 
@@ -206,7 +222,8 @@ const treeData = ref<TreeOption[]>([
     }
     .state {
       label {
-        margin-right: 50px;
+        margin-right: 40px;
+        font-weight: 600;
       }
       span {
         font-size: 16px;

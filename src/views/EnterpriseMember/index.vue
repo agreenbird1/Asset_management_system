@@ -53,7 +53,6 @@ import {
   PaginationProps,
   useMessage,
 } from 'naive-ui'
-import { totalmem } from 'os'
 
 const message = useMessage()
 const loading = ref(false)

@@ -36,4 +36,8 @@ export class UserApi {
   static changeUserRole(id: number, role: 2 | 1) {
     return request.post(`/user/role`, { role, id })
   }
+
+  static checkRepeatAccount(phone: string) {
+    return request.post<boolean>('/user/check', { phone })
+  }
 }

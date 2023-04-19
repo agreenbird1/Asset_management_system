@@ -134,11 +134,13 @@ const uploadFiles = (files: UploadFileInfo[]) => {
 const addMember = () => {
   formRef.value?.validate((errors) => {
     if (!errors) {
-      console.log(formValue.value)
-      UserApi.createUser(formValue.value).then(() => {
-        message.success('添加成功！')
-        emits('add-user')
-        resetForm()
+      UserApi.checkRepeatAccount(formValue.value.phone).then((res) => {
+        if (res.data) return message.error('手机号重复！')
+        UserApi.createUser(formValue.value).then(() => {
+          message.success('添加成功！')
+          emits('add-user')
+          resetForm()
+        })
       })
     }
   })

@@ -7,6 +7,7 @@
       selectable
       label-field="name"
       key-field="id"
+      :on-update:selected-keys="selectNode"
     />
     <div class="button-wrapper mt-30">
       <span class="add-button" @click="addVisible = true"> +{{ title }} </span>
@@ -79,6 +80,7 @@ interface IProps {
 }
 
 const props = defineProps<IProps>()
+const emits = defineEmits(['selectNode'])
 
 const treeData = ref<ICategory[]>([])
 
@@ -249,6 +251,10 @@ const suffix = ({ option }: { option: ICategory }) => [
     { default: () => '删除' }
   ),
 ]
+
+const selectNode = (ids: number[]) => {
+  emits('selectNode', ids[0] || undefined)
+}
 
 const initData = () =>
   CategoryApi.getCategory(props.type).then((res) => {

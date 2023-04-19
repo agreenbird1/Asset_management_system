@@ -18,7 +18,7 @@
       <h5><img src="@/assets/favicon.ico" alt="" />资产管理系统</h5>
       <input
         type="text"
-        placeholder="手机号/邮箱 账号"
+        placeholder="手机号"
         @input="accountChange"
         autocomplete="false"
       />
@@ -32,24 +32,27 @@
 <script setup lang="ts">
 import { CommonApi } from '@/api/common'
 import LoginApi from '@/api/login'
+import { useMessage } from 'naive-ui';
 import { onUnmounted, reactive, ref } from 'vue'
 
 const loginActive = ref(false)
+const message = useMessage()
 
 const useLogin = () => {
   const loginForm = reactive({
-    account: '',
+    phone: '',
     password: '',
   })
   const accountChange = (e: Event) => {
-    console.log((e.target as HTMLInputElement).value)
+    loginForm.phone = (e.target as HTMLInputElement).value
   }
   const passwordChange = (e: Event) => {
-    console.log((e.target as HTMLInputElement).value)
+    loginForm.password = (e.target as HTMLInputElement).value
   }
-  const login = (e: Event) => {
-    LoginApi.login(loginForm.account, loginForm.password).catch(e => {
-      console.log(e)
+  const login = () => {
+    LoginApi.login(loginForm.phone, loginForm.password).then(res => {
+      if(res.success) {}
+      else message.error(res.message)
     })
   }
   return {

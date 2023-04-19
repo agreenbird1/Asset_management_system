@@ -2,9 +2,9 @@ import request from './request'
 
 export default class LoginApi {
   /** 登录 */
-  static login(username: string, password: string) {
-    return request.post('/api/user/login', {
-      username,
+  static login(phone: string, password: string) {
+    return request.post('/user/login', {
+      phone,
       password
     })
   }

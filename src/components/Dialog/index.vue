@@ -1,5 +1,5 @@
 <template>
-  <n-modal v-model:show="showModal">
+  <n-modal v-model:show="showModal" :mask-closable="false">
     <n-card
       :style="{
         width,

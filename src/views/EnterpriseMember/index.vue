@@ -3,7 +3,7 @@
     <div class="search-header">
       <div>
         <n-input
-          v-model:value="searchInfo.name"
+          v-model:value="searchInfo.userName"
           type="text"
           placeholder="员工名字"
           size="small"
@@ -16,45 +16,192 @@
           size="small"
           aria-autocomplete="none"
         />
-        <n-button color="#6a83d0" size="small"> 查询 </n-button>
+        <n-button color="#6a83d0" size="small" @click="initData">
+          查询
+        </n-button>
       </div>
-      <AddMemberButton />
+      <AddMemberButton @add-user="initData" />
     </div>
     <main>
-      <ClassifyTree :type="2" title="添加部门分类" />
+      <ClassifyTree :type="2" title="添加部门分类" @select-node="selectNode" />
       <n-data-table
         class="table"
         :columns="columns"
         :data="data"
         :pagination="pagination"
         :bordered="false"
+        :loading="loading"
+        flex-height
+        style="height: 100%"
+        :remote="true"
       />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, h, ref } from 'vue'
 import ClassifyTree from '@/components/ClassifyTree/ClassifyTree.vue'
 import AddMemberButton from './components/AddMemberButton.vue'
+import { IUserSearch, UserApi } from '@/api/user'
+import { IUser } from '@/api/user'
+import {
+  DataTableColumns,
+  NButton,
+  NImage,
+  NSelect,
+  PaginationProps,
+  useMessage,
+} from 'naive-ui'
+import { totalmem } from 'os'
 
-const columns = ref([
+const message = useMessage()
+const loading = ref(false)
+const columns = ref<DataTableColumns<IUser>>([
   {
-    title: 'No',
-    key: 'no',
+    title: '头像',
+    key: 'avatar',
+    render(row) {
+      return h(NImage, {
+        src: row.avatar,
+        width: 50,
+        height: 50,
+        style: 'border-radius:50%',
+        objectFit: 'scale-down',
+      })
+    },
   },
   {
-    title: 'Title',
-    key: 'title',
+    title: '昵称',
+    key: 'userName',
+  },
+  {
+    title: '手机号',
+    key: 'phone',
+  },
+  {
+    title: '密码',
+    key: 'password',
+  },
+  {
+    title: '简介',
+    key: 'description',
+  },
+  {
+    title: '角色',
+    key: 'role',
+    render(row) {
+      return h(NSelect, {
+        value: row.role,
+        options: [
+          {
+            label: '成员',
+            value: 1,
+          },
+          {
+            label: '管理员',
+            value: 2,
+          },
+          {
+            label: '超级管理员',
+            value: 3,
+            disabled: true,
+          },
+        ],
+        disabled: row.role == 3,
+        onUpdateValue(v: 1 | 2) {
+          UserApi.changeUserRole(row.id!, v).then(initData)
+        },
+      })
+    },
+  },
+  {
+    title: '操作',
+    key: 'actions',
+    render(row) {
+      return [
+        h(
+          NButton,
+          {
+            size: 'small',
+            secondary: true,
+            color: row.status == 0 ? '#6a83d0' : 'red',
+            disabled: row.role == 3,
+            onClick() {
+              UserApi.changeUserStatus(row.id!, row.status ? 0 : 1).then(() => {
+                message.success('更新成功！')
+                initData()
+              })
+            },
+          },
+          () => (row.status == 0 ? '启用' : '停用')
+        ),
+        h(
+          NButton,
+          {
+            size: 'small',
+            class: 'ml-5',
+            secondary: true,
+            type: 'error',
+            disabled: row.role == 3,
+            onClick() {
+              UserApi.deleteUser(row.id!).then(() => {
+                message.success('删除成功！')
+                initData()
+              })
+            },
+          },
+          () => '删除'
+        ),
+      ]
+    },
   },
 ])
-const data = ref([])
-const pagination = ref([])
-
-const searchInfo = ref({
-  name: '',
+const data = ref<IUser[]>([])
+const total = ref(0)
+const searchInfo = ref<IUserSearch>({
+  userName: '',
   phone: '',
+  pageNum: 1,
+  pageSize: 10,
 })
+const pagination = computed<PaginationProps>(() => ({
+  page: searchInfo.value.pageNum,
+  pageSize: searchInfo.value.pageSize,
+  showSizePicker: true,
+  pageSizes: [10, 20],
+  itemCount: total.value,
+
+  onChange: (page: number) => {
+    searchInfo.value.pageNum = page
+    initData()
+  },
+  onUpdatePageSize: (pageSize: number) => {
+    searchInfo.value.pageSize = pageSize
+    searchInfo.value.pageNum = 1
+    initData()
+  },
+  prefix({ itemCount }) {
+    return `总数：${itemCount}`
+  },
+}))
+
+const selectNode = (id?: number) => {
+  searchInfo.value.categoryId = id
+  initData()
+}
+
+const initData = () => {
+  loading.value = true
+  UserApi.getUsers(searchInfo.value)
+    .then((res) => {
+      data.value = res.data.list
+      total.value = res.data.total
+    })
+    .finally(() => (loading.value = false))
+}
+
+initData()
 </script>
 
 <style scoped lang="less">

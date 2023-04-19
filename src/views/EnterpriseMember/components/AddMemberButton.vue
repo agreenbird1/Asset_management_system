@@ -2,7 +2,12 @@
   <n-button color="#6a83d0" size="small" @click="dialogVisible = true">
     添加成员
   </n-button>
-  <Dialog v-model="dialogVisible" title="添加成员">
+  <Dialog
+    v-model="dialogVisible"
+    title="添加成员"
+    @confirm="addMember"
+    @cancel="resetForm"
+  >
     <n-form
       ref="formRef"
       :label-width="80"
@@ -10,11 +15,11 @@
       label-placement="left"
       :rules="rules"
     >
-      <n-form-item label="账号" path="account">
-        <n-input v-model:value="formValue.account" placeholder="请输入账号" />
-      </n-form-item>
       <n-form-item label="昵称" path="userName">
         <n-input v-model:value="formValue.userName" placeholder="请输入昵称" />
+      </n-form-item>
+      <n-form-item label="手机号" path="phone">
+        <n-input v-model:value="formValue.phone" placeholder="请输入手机号" />
       </n-form-item>
       <n-form-item label="密码" path="password">
         <n-input
@@ -50,7 +55,7 @@
           list-type="image-card"
           :default-upload="false"
           :max="1"
-          :on-remove="() => (formValue.src = '')"
+          :on-remove="() => (formValue.avatar = '')"
         />
       </n-form-item>
     </n-form>
@@ -59,37 +64,33 @@
 
 <script setup lang="ts">
 import { CategoryApi, ICategory } from '@/api/category'
+import { IUser, UserApi } from '@/api/user'
 import Dialog from '@/components/Dialog/index.vue'
 import { sendSingleFile } from '@/utils/uploadFiles'
-import { FormInst, FormRules, UploadFileInfo } from 'naive-ui'
+import { FormInst, FormRules, UploadFileInfo, useMessage } from 'naive-ui'
 import { ref, watch } from 'vue'
 
-interface IForm {
-  account: string
-  userName: string
-  password: string
-  rePassword: string
-  categoryId?: number
-  description?: string
-  src: string
-}
-
 const dialogVisible = ref(false)
+const message = useMessage()
+const emits = defineEmits(['add-user'])
 
 const formRef = ref<FormInst | null>(null)
-const formValue = ref<IForm>({
-  account: '',
+const formValue = ref<IUser>({
   userName: '',
   password: '',
   rePassword: '',
-  src: '',
+  phone: '',
 })
 
 const rules: FormRules = {
-  account: {
+  phone: {
     required: true,
-    message: '请输入账号',
-    trigger: ['input'],
+    validator: (rule, val, callback) => {
+      if (!val) callback('请输入手机号')
+      if (!/^[1]\d{10}$/.test(val)) callback('手机号格式错误！')
+      return true
+    },
+    trigger: ['blur'],
   },
   userName: {
     required: true,
@@ -126,10 +127,33 @@ const categories = ref<ICategory[]>()
 const uploadFiles = (files: UploadFileInfo[]) => {
   files.forEach(async (file) => {
     await sendSingleFile(file)
-    formValue.value.src = file.url!
+    formValue.value.avatar = file.url!
   })
 }
 
+const addMember = () => {
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      console.log(formValue.value)
+      UserApi.createUser(formValue.value).then(() => {
+        message.success('添加成功！')
+        emits('add-user')
+        resetForm()
+      })
+    }
+  })
+}
+const resetForm = () => {
+  formValue.value = {
+    userName: '',
+    password: '',
+    rePassword: '',
+    avatar: '',
+    phone: '',
+  }
+  formRef.value?.restoreValidation()
+  dialogVisible.value = false
+}
 // 每次打开需要重新进行数据请求，防止有新增
 watch(
   () => dialogVisible.value,

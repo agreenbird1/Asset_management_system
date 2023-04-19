@@ -23,7 +23,7 @@ service.interceptors.request.use(
   }
 )
 
-service.interceptors.response.use((res) =>  {
+service.interceptors.response.use((res) => {
   return res.data
 })
 
@@ -52,3 +52,13 @@ request.patch = (url, data, config) => {
 
 // 规定返回和请求值的类型
 export default request
+
+export type PageInfo = {
+  pageSize: number
+  pageNum: number
+}
+
+export type ListInfo<T> = {
+  total: number
+  list: T[]
+}

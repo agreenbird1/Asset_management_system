@@ -5,10 +5,15 @@ import {
   ColorFilterOutline,
   RecordingOutline,
   EllipsisVerticalCircleOutline,
-  AppsOutline,
 } from '@vicons/ionicons5'
 
-export const asideAuthority = [
+export type AsideAuthorityItem = {
+  index: number
+  label: string
+  icon:  any
+  route: string
+}
+export const asideAuthority: AsideAuthorityItem[] = [
   {
     index: 1,
     label: '我的主页',
@@ -44,7 +49,5 @@ export const asideAuthority = [
     label: '企业资产管理',
     icon: EllipsisVerticalCircleOutline,
     route: '/enterprise-assets',
-  }
+  },
 ]
-
-export type AsideAuthorityItem = typeof asideAuthority[0]

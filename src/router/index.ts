@@ -1,5 +1,8 @@
+import { useUserStore } from '@/store/userStore'
 import { createRouter, createWebHistory } from 'vue-router'
+import pinia from '@/store'
 
+const userStore = useUserStore(pinia)
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -18,7 +21,8 @@ const router = createRouter({
           path: 'my-assets',
           name: 'MyAssets',
           component: () => import('@/views/MyAssets/index.vue'),
-        },{
+        },
+        {
           path: 'approval',
           name: 'Approval',
           component: () => import('@/views/Approval/index.vue'),
@@ -37,7 +41,7 @@ const router = createRouter({
           path: 'asset-monitoring',
           name: 'AssetMonitoring',
           component: () => import('@/views/AssetMonitoring/index.vue'),
-        }
+        },
       ],
     },
     {
@@ -50,6 +54,14 @@ const router = createRouter({
     if (savedPosition) return savedPosition
     return { top: 0, left: 0 }
   },
+})
+
+router.beforeEach((to, from) => {
+  if (to.path !== '/login' && !userStore.userInfo) {
+    return {
+      name: 'Login',
+    }
+  }
 })
 
 export default router

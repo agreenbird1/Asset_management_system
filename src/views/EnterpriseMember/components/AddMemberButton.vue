@@ -67,6 +67,7 @@ import { CategoryApi, ICategory } from '@/api/category'
 import { IUser, UserApi } from '@/api/user'
 import Dialog from '@/components/Dialog/index.vue'
 import { phoneReg } from '@/config/regExp'
+import { encrypt } from '@/utils/crypto'
 import { sendSingleFile } from '@/utils/uploadFiles'
 import { FormInst, FormRules, UploadFileInfo, useMessage } from 'naive-ui'
 import { ref, watch } from 'vue'
@@ -141,7 +142,10 @@ const addMember = () => {
     if (!errors) {
       UserApi.checkRepeatAccount(formValue.value.phone).then((res) => {
         if (res.data) return message.error('手机号重复！')
-        UserApi.createUser(formValue.value).then(() => {
+        UserApi.createUser({
+          ...formValue.value,
+          password: encrypt(formValue.value.password),
+        }).then(() => {
           message.success('添加成功！')
           emits('add-user')
           resetForm()

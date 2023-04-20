@@ -34,6 +34,7 @@
 import { CommonApi } from '@/api/common'
 import LoginApi from '@/api/login'
 import { phoneReg } from '@/config/regExp'
+import { encrypt } from '@/utils/crypto'
 import { useMessage } from 'naive-ui'
 import { onUnmounted, reactive, ref } from 'vue'
 
@@ -58,7 +59,7 @@ const useLogin = () => {
     if (!phoneReg.test(phone)) return message.warning('手机号格式错误！')
     if (password.length > 16 || password.length < 6)
       return message.warning('密码长度在6-16位！')
-    LoginApi.login(phone, password).then((res) => {
+    LoginApi.login(phone, encrypt(password)).then((res) => {
       if (res.success) {
         // 存储到 store
         // 返回首页

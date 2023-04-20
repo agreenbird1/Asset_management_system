@@ -1,5 +1,8 @@
 import { useUserStore } from '@/store/userStore'
 import { createRouter, createWebHistory } from 'vue-router'
+import nProgress from 'nprogress'
+// 需要引入css
+import 'nprogress/nprogress.css'
 import pinia from '@/store'
 
 const userStore = useUserStore(pinia)
@@ -57,11 +60,15 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
+  nProgress.start()
   if (to.path !== '/login' && !userStore.userInfo) {
     return {
       name: 'Login',
     }
   }
+})
+router.afterEach(() => {
+  nProgress.done()
 })
 
 export default router

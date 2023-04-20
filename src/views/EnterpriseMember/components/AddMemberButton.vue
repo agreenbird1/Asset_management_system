@@ -66,6 +66,7 @@
 import { CategoryApi, ICategory } from '@/api/category'
 import { IUser, UserApi } from '@/api/user'
 import Dialog from '@/components/Dialog/index.vue'
+import { phoneReg } from '@/config/regExp'
 import { sendSingleFile } from '@/utils/uploadFiles'
 import { FormInst, FormRules, UploadFileInfo, useMessage } from 'naive-ui'
 import { ref, watch } from 'vue'
@@ -87,7 +88,7 @@ const rules: FormRules = {
     required: true,
     validator: (rule, val, callback) => {
       if (!val) callback('请输入手机号')
-      if (!/^[1]\d{10}$/.test(val)) callback('手机号格式错误！')
+      if (!phoneReg.test(val)) callback('手机号格式错误！')
       return true
     },
     trigger: ['blur'],
@@ -99,7 +100,11 @@ const rules: FormRules = {
   },
   password: {
     required: true,
-    message: '请输入密码',
+    validator: (rule, val, callback) => {
+      if (!val) callback('请输入密码')
+      if (val.length > 16 || val.length < 6) callback('密码长度在6-16位！')
+      return true
+    },
     trigger: ['blur'],
   },
   rePassword: {

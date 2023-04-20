@@ -20,6 +20,7 @@
         type="text"
         placeholder="手机号"
         @input="accountChange"
+        maxlength="11"
         autocomplete="false"
       />
       <input type="password" placeholder="登录密码" @input="passwordChange" />
@@ -32,7 +33,8 @@
 <script setup lang="ts">
 import { CommonApi } from '@/api/common'
 import LoginApi from '@/api/login'
-import { useMessage } from 'naive-ui';
+import { phoneReg } from '@/config/regExp'
+import { useMessage } from 'naive-ui'
 import { onUnmounted, reactive, ref } from 'vue'
 
 const loginActive = ref(false)
@@ -44,15 +46,23 @@ const useLogin = () => {
     password: '',
   })
   const accountChange = (e: Event) => {
-    loginForm.phone = (e.target as HTMLInputElement).value
+    ;(e.target as HTMLInputElement).value = loginForm.phone = (
+      e.target as HTMLInputElement
+    ).value.replace(/[^0-9]/gi, '')
   }
   const passwordChange = (e: Event) => {
     loginForm.password = (e.target as HTMLInputElement).value
   }
   const login = () => {
-    LoginApi.login(loginForm.phone, loginForm.password).then(res => {
-      if(res.success) {}
-      else message.error(res.message)
+    const { phone, password } = loginForm
+    if (!phoneReg.test(phone)) return message.warning('手机号格式错误！')
+    if (password.length > 16 || password.length < 6)
+      return message.warning('密码长度在6-16位！')
+    LoginApi.login(phone, password).then((res) => {
+      if (res.success) {
+        // 存储到 store
+        // 返回首页
+      } else message.error(res.message)
     })
   }
   return {

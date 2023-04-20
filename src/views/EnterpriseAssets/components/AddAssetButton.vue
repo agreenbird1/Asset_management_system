@@ -2,7 +2,12 @@
   <n-button color="#6a83d0" size="small" @click="dialogVisible = true">
     添加资产
   </n-button>
-  <Dialog v-model="dialogVisible" title="添加资产">
+  <Dialog
+    v-model="dialogVisible"
+    title="添加资产"
+    @confirm="addAsset"
+    @cancel="resetForm"
+  >
     <n-form
       ref="formRef"
       :label-width="80"
@@ -10,26 +15,44 @@
       label-placement="left"
       :rules="rules"
     >
+      <n-form-item label="资产名称" path="name">
+        <n-input v-model:value="formValue.name" placeholder="请输入资产名称" />
+      </n-form-item>
       <n-form-item label="规格型号" path="specification">
         <n-input
           v-model:value="formValue.specification"
           placeholder="请输入资产规格型号"
         />
       </n-form-item>
-      <n-form-item label="数量" path="number">
-        <n-input v-model:value="formValue.number" placeholder="输入数量" />
+      <n-form-item label="数量" path="quantity">
+        <n-input v-model:value="formValue.quantity" placeholder="输入数量" />
       </n-form-item>
       <n-form-item label="金额" path="amount">
         <n-input v-model:value="formValue.amount" placeholder="输入单个金额" />
       </n-form-item>
-      <n-form-item label="分类" path="classifyId">
-        <n-input v-model:value="formValue.classifyId" placeholder="选择分类" />
+      <n-form-item label="存放地点" path="location">
+        <n-input
+          v-model:value="formValue.location"
+          placeholder="输入存放地点"
+        />
       </n-form-item>
-      <n-form-item label="资产图片" path="cover">
+      <n-form-item label="分类" path="categoryId">
+        <n-tree-select
+          :options="categories"
+          @update:value="(v: number) => (formValue.categoryId = v)"
+          key-field="id"
+          label-field="name"
+          placeholder="请选择资产分类"
+          clearable
+        />
+      </n-form-item>
+      <n-form-item label="资产图片" path="picture">
         <n-upload
-          action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+          :on-update:file-list="uploadFiles"
+          :default-upload="false"
           list-type="image-card"
           :max="1"
+          :on-remove="() => (formValue.picture = '')"
         />
       </n-form-item>
     </n-form>
@@ -37,47 +60,81 @@
 </template>
 
 <script setup lang="ts">
+import { IAsset } from '@/api/asset'
+import { CategoryApi, ICategory } from '@/api/category'
 import Dialog from '@/components/Dialog/index.vue'
-import { FormInst } from 'naive-ui'
-import { ref } from 'vue'
-
-interface IForm {
-  specification: string
-  number?: number
-  amount?: number
-  classifyId?: number
-  cover?: string
-}
+import { sendSingleFile } from '@/utils/uploadFiles'
+import { FormInst, FormRules, UploadFileInfo } from 'naive-ui'
+import { ref, watch } from 'vue'
 
 const dialogVisible = ref(false)
 
 const formRef = ref<FormInst | null>(null)
-const formValue = ref<IForm>({
+const formValue = ref<Partial<IAsset>>({
   specification: '',
 })
-
-const rules = {
+const categories = ref<ICategory[]>()
+const rules: FormRules = {
+  name: {
+    required: true,
+    message: '请输入名称',
+    trigger: ['blur'],
+  },
   specification: {
     required: true,
     message: '请输入规格',
     trigger: ['input'],
   },
-  number: {
+  quantity: {
     required: true,
     message: '请输入数量',
-    trigger: ['input'],
+    type: 'number',
+    trigger: ['blur'],
   },
   amount: {
     required: true,
     message: '请输入金额',
     trigger: ['input'],
   },
-  classifyId: {
+  categoryId: {
     required: true,
     message: '请选择分类',
     trigger: ['input'],
   },
+  location: {
+    required: true,
+    message: '请输入存放位置',
+    trigger: ['blur'],
+  },
 }
+
+const uploadFiles = (files: UploadFileInfo[]) => {
+  files.forEach(async (file) => {
+    await sendSingleFile(file)
+    formValue.value.picture = file.url!
+  })
+}
+
+const resetForm = () => {
+  formValue.value = {
+    specification: '',
+  }
+  formRef.value?.restoreValidation()
+  dialogVisible.value = false
+}
+
+const addAsset = () => {}
+
+watch(
+  () => dialogVisible.value,
+  () => {
+    dialogVisible.value &&
+      CategoryApi.getCategory(2).then((res) => {
+        categories.value = res.data
+      })
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped></style>

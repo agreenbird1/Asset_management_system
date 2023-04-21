@@ -22,12 +22,6 @@ export const asideAuthority: AsideAuthorityItem[] = [
   },
   {
     index: 1,
-    label: '审批',
-    icon: FileTrayOutline,
-    route: '/approval',
-  },
-  {
-    index: 1,
     label: '我的资产',
     icon: AlbumsOutline,
     route: '/my-assets',
@@ -37,6 +31,12 @@ export const asideAuthority: AsideAuthorityItem[] = [
     label: '企业/部门成员',
     icon: ColorFilterOutline,
     route: '/enterprise-member',
+  },
+  {
+    index: 3,
+    label: '审批',
+    icon: FileTrayOutline,
+    route: '/approval',
   },
   {
     index: 3,

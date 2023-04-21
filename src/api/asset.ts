@@ -4,7 +4,7 @@ export type IAsset = {
   id?: number
   name: string
   specification: string
-  quantity: number
+  quantity: number | string
   amount: number
   categoryId?: number
   picture?: string
@@ -18,7 +18,7 @@ export interface IAssetSearch extends PageInfo {
 }
 
 export class AssetsApi {
-  static createAsset(param: IAsset) {
+  static createAsset(param: Partial<IAsset>) {
     return request.post('/asset', param)
   }
   static getAssets(param: IAssetSearch) {

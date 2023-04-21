@@ -25,7 +25,11 @@
         />
       </n-form-item>
       <n-form-item label="数量" path="quantity">
-        <n-input v-model:value="formValue.quantity" placeholder="输入数量" />
+        <n-input
+          v-model:value="formValue.quantity"
+          @input="(v:string) => (formValue.quantity = v.replace(/[^0-9]/gi, ''))"
+          placeholder="输入数量"
+        />
       </n-form-item>
       <n-form-item label="金额" path="amount">
         <n-input v-model:value="formValue.amount" placeholder="输入单个金额" />
@@ -60,15 +64,17 @@
 </template>
 
 <script setup lang="ts">
-import { IAsset } from '@/api/asset'
+import { AssetsApi, IAsset } from '@/api/asset'
 import { CategoryApi, ICategory } from '@/api/category'
 import Dialog from '@/components/Dialog/index.vue'
 import { sendSingleFile } from '@/utils/uploadFiles'
-import { FormInst, FormRules, UploadFileInfo } from 'naive-ui'
+import { FormInst, FormRules, UploadFileInfo, useMessage } from 'naive-ui'
 import { ref, watch } from 'vue'
 
-const dialogVisible = ref(false)
+const emits = defineEmits(['add-asset'])
 
+const dialogVisible = ref(false)
+const message = useMessage()
 const formRef = ref<FormInst | null>(null)
 const formValue = ref<Partial<IAsset>>({
   specification: '',
@@ -87,9 +93,11 @@ const rules: FormRules = {
   },
   quantity: {
     required: true,
-    message: '请输入数量',
-    type: 'number',
-    trigger: ['blur'],
+    validator(rule, val, callback) {
+      if (!+val) callback('请输入正确的数量')
+      return true
+    },
+    trigger: ['input'],
   },
   amount: {
     required: true,
@@ -98,8 +106,11 @@ const rules: FormRules = {
   },
   categoryId: {
     required: true,
-    message: '请选择分类',
-    trigger: ['input'],
+    validator: (rule, val, callback) => {
+      if (val) return true
+      callback('请选择分类')
+    },
+    trigger: ['blur'],
   },
   location: {
     required: true,
@@ -123,13 +134,24 @@ const resetForm = () => {
   dialogVisible.value = false
 }
 
-const addAsset = () => {}
+const addAsset = () => {
+  console.log(formValue.value)
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      AssetsApi.createAsset(formValue.value).then(() => {
+        message.success('添加成功！')
+        emits('add-asset')
+        resetForm()
+      })
+    }
+  })
+}
 
 watch(
   () => dialogVisible.value,
   () => {
     dialogVisible.value &&
-      CategoryApi.getCategory(2).then((res) => {
+      CategoryApi.getCategory(1).then((res) => {
         categories.value = res.data
       })
   },

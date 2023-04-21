@@ -59,13 +59,14 @@ const router = createRouter({
   },
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach((to, from, next) => {
   nProgress.start()
   if (to.path !== '/login' && !userStore.userInfo) {
     return {
       name: 'Login',
     }
   }
+  next()
 })
 router.afterEach(() => {
   nProgress.done()

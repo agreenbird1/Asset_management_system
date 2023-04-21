@@ -2,7 +2,7 @@
   <div class="df h100">
     <div class="projects-section">
       <div class="projects-section-header">
-        <p>我的申请 <span @click="requestModal = true">去申请</span></p>
+        <p>我的申请 <ApplyAsset /></p>
         <div class="state">
           <label>状态：</label>
           <span
@@ -25,31 +25,6 @@
       </div>
     </div>
     <ProfileSection />
-
-    <Dialog v-model="requestModal" title="资产申请">
-      <div class="df jcsb">
-        <n-tree
-          style="width: 30%"
-          block-line
-          :data="treeData"
-          expand-on-click
-          selectable
-        />
-        <section class="modal-section">
-          <AssetItem />
-          <AssetItem />
-          <AssetItem />
-          <AssetItem />
-          <AssetItem />
-        </section>
-      </div>
-      <template #footer>
-        <div class="modal-footer df jcsb">
-          <span> 已选择资产：4 </span>
-          <n-button strong secondary type="info" round> 确认 </n-button>
-        </div>
-      </template>
-    </Dialog>
   </div>
 </template>
 
@@ -57,9 +32,7 @@
 import { DataTableColumns, NButton, useMessage } from 'naive-ui'
 import { h, reactive, ref } from 'vue'
 import ProfileSection from './components/ProfileSection.vue'
-import { TreeOption } from 'naive-ui'
-import AssetItem from './components/AssetItem.vue'
-import Dialog from '@/components/Dialog/index.vue'
+import ApplyAsset from './components/ApplyAsset.vue'
 
 type StateValue = 1 | 2 | 3 | 4 | 5
 
@@ -169,20 +142,6 @@ const pagination = reactive({
     pagination.page = 1
   },
 })
-
-const requestModal = ref(false)
-const treeData = ref<TreeOption[]>([
-  {
-    label: 'data1',
-    key: 1,
-    value: 1,
-  },
-  {
-    label: 'data2',
-    key: 2,
-    value: 2,
-  },
-])
 </script>
 
 <style scoped lang="less">

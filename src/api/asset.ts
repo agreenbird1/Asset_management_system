@@ -9,6 +9,8 @@ export type IAsset = {
   categoryId?: number
   picture?: string
   location: string
+  purchaseTime?: Date
+  serialNumber?: string
   status: 0 | 1
 }
 

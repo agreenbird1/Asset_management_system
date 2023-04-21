@@ -1,3 +1,4 @@
+import { useUserStore } from '@/store/userStore'
 import request, { ListInfo, PageInfo } from './request'
 
 export interface IUser {
@@ -19,6 +20,8 @@ export interface IUserSearch extends PageInfo {
   categoryId?: number
 }
 
+const userInfo = useUserStore().userInfo
+
 export class UserApi {
   static createUser(param: IUser) {
     return request.post('/user', param)
@@ -33,8 +36,8 @@ export class UserApi {
     return request.post(`/user/status`, { status, id })
   }
 
-  static updateUser(id: number, param: Partial<IUser>) {
-    return request.patch(`/user/status/${id}`, param)
+  static updateUser(param: Partial<IUser>) {
+    return request.patch(`/user/status/${userInfo?.id}`, param)
   }
 
   static changeUserRole(id: number, role: 2 | 1) {

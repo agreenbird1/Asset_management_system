@@ -1,10 +1,10 @@
 <template>
   <div class="profile-section">
-    <p class="company">觉晓科技</p>
+    <p class="company">RoleTang</p>
     <div class="profile-header df jcsb aic">
       <button class="avatar">
-        <img src="https://assets.codepen.io/3306515/IMG_2025.jpg" />
-        <span>Aybüke C.</span>
+        <img :src="userInfo?.avatar" />
+        <span>{{ userInfo?.userName }}</span>
       </button>
       <div class="profile-options df aic">
         <ChangePassword />
@@ -18,6 +18,7 @@
       <div class="fl1">
         <n-input
           v-if="showDescription"
+          v-model="description"
           ref="inputRef"
           round
           placeholder="输入简介"
@@ -26,7 +27,7 @@
           style="display: inline-block;"
         />
         <span v-else @click="startChangeDescription">
-          长得越丑，就越要往台上走。
+          {{ userInfo?.description || '暂时还没有介绍哦！' }}
         </span>
       </div>
     </p>
@@ -37,17 +38,24 @@
 import { ref } from 'vue'
 import ChangePassword from './ChangePassword.vue'
 import Logout from './Logout.vue'
-import { NInput } from 'naive-ui';
+import { NInput, useMessage } from 'naive-ui';
+import { useUserStore } from '@/store/userStore';
+import { UserApi } from '@/api/user';
 
+const userInfo = useUserStore().userInfo
 const showDescription = ref(false)
 const inputRef = ref<InstanceType<typeof NInput>>()
+const description = ref('')
 
 const changeDescription = () => {
   showDescription.value = false
+  UserApi.updateUser({description:description.value}).then((res) => {
+    res.success && useMessage().success('修改成功！')
+  })
 }
 const startChangeDescription = () => {
   showDescription.value = true
-  inputRef.value?.focus()
+  inputRef.value?.inputElRef?.focus()
 }
 </script>
 

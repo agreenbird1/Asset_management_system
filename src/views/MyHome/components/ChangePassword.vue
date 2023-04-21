@@ -12,7 +12,13 @@
       width="22"
       @click="showDialog = true"
     />
-    <Dialog v-model="showDialog" title="修改密码" width="500px">
+    <Dialog
+      v-model="showDialog"
+      title="修改密码"
+      width="500px"
+      @cancel="resetForm"
+      @confirm="confirm"
+    >
       <n-form
         ref="formRef"
         :label-width="80"
@@ -20,14 +26,26 @@
         :rules="rules"
         label-placement="left"
       >
-        <n-form-item label="姓名" path="user.name">
-          <n-input v-model:value="formValue.user.name" placeholder="输入姓名" />
+        <n-form-item label="原始密码" path="password">
+          <n-input
+            v-model:value="formValue.password"
+            type="password"
+            placeholder="请输入原始密码"
+          />
         </n-form-item>
-        <n-form-item label="年龄" path="user.age">
-          <n-input v-model:value="formValue.user.age" placeholder="输入年龄" />
+        <n-form-item label="新密码" path="newPassword">
+          <n-input
+            v-model:value="formValue.newPassword"
+            type="password"
+            placeholder="请输入密码"
+          />
         </n-form-item>
-        <n-form-item label="电话号码" path="phone">
-          <n-input v-model:value="formValue.phone" placeholder="电话号码" />
+        <n-form-item label="确认新密码" path="rePassword">
+          <n-input
+            v-model:value="formValue.rePassword"
+            placeholder="请再次输入密码"
+            type="password"
+          />
         </n-form-item>
       </n-form>
     </Dialog>
@@ -35,49 +53,79 @@
 </template>
 
 <script setup lang="ts">
+import LoginApi from '@/api/login'
+import { UserApi } from '@/api/user'
 import Dialog from '@/components/Dialog/index.vue'
-import { FormInst, useMessage } from 'naive-ui'
+import { useUserStore } from '@/store/userStore'
+import { encrypt } from '@/utils/crypto'
+import { FormInst, FormRules, useMessage } from 'naive-ui'
 import { ref } from 'vue'
 
 const showDialog = ref(false)
+
+const userInfo = useUserStore().userInfo
 const formRef = ref<FormInst | null>(null)
 const formValue = ref({
-  user: {
-    name: '',
-    age: '',
-  },
-  phone: '',
+  password: '',
+  newPassword: '',
+  rePassword: '',
 })
-const rules = {
-  user: {
-    name: {
-      required: true,
-      message: '请输入姓名',
-      trigger: 'blur',
-    },
-    age: {
-      required: true,
-      message: '请输入年龄',
-      trigger: ['input', 'blur'],
-    },
-  },
-  phone: {
+const rules: FormRules = {
+  password: {
     required: true,
-    message: '请输入电话号码',
-    trigger: ['input'],
+    validator: (rule, val, callback) => {
+      if (!val) callback('请输入原始密码')
+      if (val.length > 16 || val.length < 6) callback('密码长度在6-16位！')
+      return true
+    },
+    trigger: ['blur'],
+  },
+  newPassword: {
+    required: true,
+    validator: (rule, val, callback) => {
+      if (!val) callback('请输入新密码')
+      if (val.length > 16 || val.length < 6) callback('密码长度在6-16位！')
+      return true
+    },
+    trigger: ['blur'],
+  },
+  rePassword: {
+    required: true,
+    validator: (rule, val, callback) => {
+      if (!val) callback('请确认新密码')
+      if (val && val !== formValue.value.password)
+        callback('两次密码输入不一致！')
+      return true
+    },
+    trigger: ['blur'],
   },
 }
 
 const message = useMessage()
 
-const handleValidateClick = (e: MouseEvent) => {
-  e.preventDefault()
+const resetForm = () => {
+  formValue.value.password = ''
+  formValue.value.rePassword = ''
+  formRef.value?.restoreValidation()
+  showDialog.value = false
+}
+
+const confirm = () => {
   formRef.value?.validate((errors) => {
     if (!errors) {
-      message.success('Valid')
-    } else {
-      console.log(errors)
-      message.error('Invalid')
+      LoginApi.login(userInfo!.phone, encrypt(formValue.value.password)).then(
+        (res) => {
+          // 原始密码是否正确
+          if (res.success) {
+            UserApi.updateUser(userInfo?.id!, {
+              password: formValue.value.newPassword,
+            }).then(() => {
+              message.success('修改成功！')
+              resetForm()
+            })
+          } else message.error(res.message)
+        }
+      )
     }
   })
 }

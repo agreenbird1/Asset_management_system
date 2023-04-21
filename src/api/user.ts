@@ -33,6 +33,10 @@ export class UserApi {
     return request.post(`/user/status`, { status, id })
   }
 
+  static updateUser(id: number, param: Partial<IUser>) {
+    return request.patch(`/user/status/${id}`, param)
+  }
+
   static changeUserRole(id: number, role: 2 | 1) {
     return request.post(`/user/role`, { role, id })
   }

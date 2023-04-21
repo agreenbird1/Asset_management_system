@@ -1,7 +1,9 @@
 <template>
   <div class="app-sidebar">
     <n-popover
-      v-for="(item, i) in asideAuthority"
+      v-for="(item, i) in asideAuthority.filter(
+        (a) => a.index <= (userInfo?.role || 1)
+      )"
       :key="i"
       trigger="hover"
       placement="right"
@@ -23,6 +25,9 @@
 
 <script setup lang="ts">
 import { asideAuthority } from '@/config/authority'
+import { useUserStore } from '@/store/userStore'
+
+const userInfo = useUserStore().userInfo
 </script>
 
 <style scoped lang="less">
@@ -51,7 +56,7 @@ import { asideAuthority } from '@/config/authority'
 
   &:hover {
     background-color: var(--link-color-hover);
-    i{
+    i {
       color: var(--link-color-active);
     }
   }

@@ -39,13 +39,13 @@ export const asideAuthority: AsideAuthorityItem[] = [
     route: '/enterprise-member',
   },
   {
-    index: 2,
+    index: 3,
     label: '资产监控',
     icon: RecordingOutline,
     route: '/asset-monitoring',
   },
   {
-    index: 2,
+    index: 3,
     label: '企业资产管理',
     icon: EllipsisVerticalCircleOutline,
     route: '/enterprise-assets',

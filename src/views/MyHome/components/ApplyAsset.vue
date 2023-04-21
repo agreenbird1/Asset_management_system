@@ -1,10 +1,15 @@
 <template>
-  <div style="display: inline-block">
+  <div class="apply-asset">
     <span @click="requestModal = true">去申请</span>
-    <Dialog v-model="requestModal" title="资产申请" @cancel="resetDialog">
-      <div class="df jcsb">
+    <Dialog
+      v-model="requestModal"
+      title="资产申请"
+      @cancel="resetDialog"
+      width="50%"
+    >
+      <div class="df jcsb" id="apply-asset">
         <n-tree
-          style="width: 30%"
+          style="width: 20%"
           block-line
           :data="treeData"
           expand-on-click
@@ -13,38 +18,75 @@
           selectable
           :on-update:selected-keys="selectNode"
         />
-        <section class="modal-section">
-          <AssetItem v-for="item in data" :key="item.id" :asset="item" />
-        </section>
         <!-- 加载条 -->
-        <n-spin />
-        <n-pagination
-          v-model:page="searchInfo.pageNum"
-          v-model:page-size="searchInfo.pageSize"
-          :page-count="total"
-        >
-          <template #prefix> 共{{ total }}项 </template>
-        </n-pagination>
+        <main class="fl1 pl-10">
+          <n-spin v-if="loading" />
+          <section v-else class="modal-section mb-10">
+            <div v-for="item in data" :key="item.id" class="item-wrapper">
+              <AssetItem :asset="item" />
+              <n-checkbox
+                :checked="item.checked"
+                :on-update:checked="() => checkAssetItem(item)"
+                size="small"
+              />
+            </div>
+          </section>
+
+          <n-pagination
+            v-model:page="searchInfo.pageNum"
+            v-model:page-size="searchInfo.pageSize"
+            :page-count="total"
+          >
+            <template #prefix> 共{{ total }}项 </template>
+          </n-pagination>
+        </main>
       </div>
       <template #footer>
-        <div class="df jcsb" id="modal-footer">
-          <span> 已选择资产：4 </span>
+        <div class="df jcsb aic w100">
+          <span>
+            已选择资产：4
+            <n-button
+              quaternary
+              round
+              size="small"
+              color="#6a83d0"
+              @click="drawerVisible = true"
+            >
+              查看
+            </n-button>
+          </span>
           <n-button strong secondary type="info" round> 确认 </n-button>
         </div>
-        <n-drawer
-          v-model:show="drawerVisible"
-          :width="200"
-          :height="200"
-          placement="bottom"
-          :trap-focus="false"
-          :block-scroll="false"
-          to="#modal-footer"
-        >
-          <n-drawer-content title="已选资产信息">
-            《斯通纳》是美国作家约翰·威廉姆斯在 1965 年出版的小说。
-          </n-drawer-content>
-        </n-drawer>
       </template>
+      <n-drawer
+        v-model:show="drawerVisible"
+        :width="200"
+        :height="200"
+        placement="bottom"
+        :trap-focus="false"
+        :block-scroll="false"
+        to="#apply-asset"
+      >
+        <n-drawer-content title="已选资产信息">
+          <div
+            v-for="(checkedItem, index) in checkedItems"
+            :key="checkedItem.id"
+            class="checked-item df jcsb"
+          >
+            <div>
+              <span style="font-size: 16px; margin-right: 10px">
+                {{ checkedItem.name }}
+              </span>
+              <span style="font-size: 12px; color: #aaa">
+                {{ checkedItem.specification }}
+              </span>
+            </div>
+            <n-button text type="error" @click="removeCheckedItem(index)">
+              移除
+            </n-button>
+          </div>
+        </n-drawer-content>
+      </n-drawer>
     </Dialog>
   </div>
 </template>
@@ -56,10 +98,15 @@ import Dialog from '@/components/Dialog/index.vue'
 import { CategoryApi, ICategory } from '@/api/category'
 import { AssetsApi, IAsset, IAssetSearch } from '@/api/asset'
 
+interface CheckedAsset extends IAsset {
+  checked?: boolean
+}
+
 const emits = defineEmits(['selectNode'])
 const requestModal = ref(false)
 const treeData = ref<ICategory[]>([])
-const data = ref<IAsset[]>([])
+const data = ref<CheckedAsset[]>([])
+const checkedItems = ref<CheckedAsset[]>([])
 const loading = ref(false)
 const total = ref(0)
 const searchInfo = ref<IAssetSearch>({
@@ -81,6 +128,16 @@ const resetDialog = () => {
 const selectNode = (ids: number[]) => {
   emits('selectNode', ids[0] || undefined)
 }
+const checkAssetItem = (item: CheckedAsset) => {
+  const index = checkedItems.value.findIndex((i) => i.id == item.id)
+  if (index == -1) checkedItems.value.push(item)
+  else checkedItems.value.splice(index, -1)
+  console.log(checkedItems.value)
+}
+const removeCheckedItem = (index: number) => {
+  checkedItems.value.splice(index, 1)[0].checked = false
+  checkedItems.value.length == 0 && (drawerVisible.value = false)
+}
 
 const initData = () => {
   loading.value = true
@@ -99,4 +156,30 @@ CategoryApi.getCategory(1).then((res) => {
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.apply-asset {
+  display: inline-block;
+  height: 30px;
+  line-height: 22px;
+  width: 80px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid var(--main-color);
+  & > span {
+    font-size: 16px;
+  }
+}
+main {
+  border-left: 1px solid #eee;
+}
+
+.item-wrapper {
+  position: relative;
+  .n-checkbox {
+    position: absolute;
+    top: 0;
+    right: 10px;
+  }
+}
+</style>

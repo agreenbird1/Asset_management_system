@@ -4,13 +4,20 @@
     <section>
       <p class="asset-name">
         <span>{{ asset.name }}</span>
-        <span class="status"><n-checkbox size="small" /></span>
       </p>
       <ul>
-        <li>资产编码: <span>{{ asset.serialNumber }}</span></li>
-        <li>规格型号:<span>{{ asset.specification }}</span></li>
-        <li>存放位置:<span>{{ asset.location }}</span></li>
-        <li>购买时间:<span>{{ asset.purchaseTime }}</span></li>
+        <li>
+          资产编码: <span>{{ asset.serialNumber }}</span>
+        </li>
+        <li>
+          规格型号:<span>{{ asset.specification }}</span>
+        </li>
+        <li>
+          存放位置:<span>{{ asset.location }}</span>
+        </li>
+        <li>
+          购买时间:<span>{{ asset.purchaseTime }}</span>
+        </li>
       </ul>
     </section>
   </div>

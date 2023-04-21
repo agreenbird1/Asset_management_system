@@ -70,15 +70,9 @@ const useLogin = () => {
         // 存储到 store
         storage.setSession('userState', {
           userInfo: res.data,
-          permission: asideAuthority.filter(
-            (permission) => permission.index < res.data.role!
-          ),
         })
         userStore.$patch({
           userInfo: res.data,
-          permission: asideAuthority.filter(
-            (permission) => permission.index < res.data.role!
-          ),
         })
         router.push('/')
       } else message.error(res.message)

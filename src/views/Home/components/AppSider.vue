@@ -1,7 +1,7 @@
 <template>
   <div class="app-sidebar">
     <n-popover
-      v-for="(item, i) in permission"
+      v-for="(item, i) in permissions"
       :key="i"
       trigger="hover"
       placement="right"
@@ -22,9 +22,16 @@
 </template>
 
 <script setup lang="ts">
+import { asideAuthority } from '@/config/authority'
 import { useUserStore } from '@/store/userStore'
+import { computed } from 'vue'
 
-const permission = useUserStore().permission
+const userState = useUserStore()
+const permissions = computed(() =>
+  asideAuthority.filter(
+    (permission) => permission.index <= (userState.userInfo?.role || 1)
+  )
+)
 </script>
 
 <style scoped lang="less">

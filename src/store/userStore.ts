@@ -1,11 +1,9 @@
 import { IUser } from './../api/user'
-import { AsideAuthorityItem } from '@/config/authority'
 import storage from '@/utils/storage'
 import { defineStore } from 'pinia'
 
 type UserStoreState = {
   userInfo?: IUser
-  permission: AsideAuthorityItem[]
 }
 
 // useStore 可以是 useUser、useCart 之类的任何东西
@@ -15,7 +13,6 @@ export const useUserStore = defineStore('userStore', {
     const state = storage.getSession<UserStoreState>('userState')
     return {
       userInfo: state?.userInfo,
-      permission: state?.permission || [],
     }
   },
 })

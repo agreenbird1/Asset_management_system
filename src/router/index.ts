@@ -46,6 +46,12 @@ const router = createRouter({
           component: () => import('@/views/AssetMonitoring/index.vue'),
         },
       ],
+      beforeEnter(to) {
+        if (to.path !== '/login' && !userStore.userInfo) {
+          router.push('/login')
+          return false
+        }
+      },
     },
     {
       path: '/login',
@@ -61,11 +67,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   nProgress.start()
-  if (to.path !== '/login' && !userStore.userInfo) {
-    return {
-      name: 'Login',
-    }
-  }
   next()
 })
 router.afterEach(() => {

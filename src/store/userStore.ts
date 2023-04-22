@@ -3,7 +3,6 @@ import router from '@/router'
 import { IUser } from './../api/user'
 import storage from '@/utils/storage'
 import { defineStore } from 'pinia'
-import { useMessage } from 'naive-ui'
 
 type UserStoreState = {
   userInfo?: IUser
@@ -21,18 +20,15 @@ export const useUserStore = defineStore('userStore', {
   actions: {
     setUserInfo(phone: string, password: string, path?: string) {
       LoginApi.login(phone, password).then((res) => {
-        console.log('setUserInfo', res)
-        if (res.success) {
-          // 存储到 store
-          storage.setSession('userState', {
-            userInfo: res.data,
-          })
-          this.$patch({
-            userInfo: res.data,
-          })
-          path && router.push('/')
-        } else useMessage().error(res.message)
-      })
+        // 存储到 store
+        storage.setSession('userState', {
+          userInfo: res.data,
+        })
+        this.$patch({
+          userInfo: res.data,
+        })
+        path && router.push('/')
+      }).catch(e => window.$message.error(e.message))
     },
   },
 })

@@ -38,6 +38,7 @@ import { encrypt } from '@/utils/crypto'
 import { useMessage } from 'naive-ui'
 import { onUnmounted, reactive, ref } from 'vue'
 
+window.$message = useMessage()
 const userStore = useUserStore()
 const loginActive = ref(false)
 const message = useMessage()

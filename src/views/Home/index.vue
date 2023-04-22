@@ -11,9 +11,9 @@
 <script setup lang="ts">
 import AppHeader from '@/views/Home/components/AppHeader.vue';
 import AppSider from '@/views/Home/components/AppSider.vue';
+import { useMessage } from 'naive-ui';
 
-
-
+window.$message = useMessage()
 </script>
 
 <style scoped lang="less">

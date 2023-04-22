@@ -11,7 +11,7 @@
         />
         <n-button color="#6a83d0" size="small" @click="initData"> 查询 </n-button>
       </div>
-      <AddAssetButton />
+      <AddAssetButton @add-asset="initData" />
     </div>
     <main>
       <ClassifyTree :type="1" title="添加资产分类" @select-node="selectNode" />

@@ -24,7 +24,7 @@ service.interceptors.request.use(
 )
 
 service.interceptors.response.use((res) => {
-  return res.data.success ? res.data : Promise.reject(res)
+  return res.data.success ? res.data : Promise.reject(res.data)
 })
 
 const request: requestType & requestMethod = (url, method, data, config) => {

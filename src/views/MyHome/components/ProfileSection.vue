@@ -3,8 +3,8 @@
     <p class="company">RoleTang</p>
     <div class="profile-header df jcsb aic">
       <button class="avatar">
-        <img :src="userInfo?.avatar" />
-        <span>{{ userInfo?.userName }}</span>
+        <img :src="userStore.userInfo?.avatar" />
+        <span>{{ userStore.userInfo?.userName }}</span>
       </button>
       <div class="profile-options df aic">
         <ChangePassword />
@@ -12,50 +12,42 @@
       </div>
     </div>
     <p>中后台项目组</p>
-    <p>前端工程师</p>
     <p class="df aic">
       <span>个人简介：</span>
-      <div class="fl1">
-        <n-input
-          v-if="showDescription"
-          v-model="description"
-          ref="inputRef"
-          round
-          placeholder="输入简介"
-          @blur="changeDescription"
-          size="small"
-          style="display: inline-block;"
-        />
-        <span v-else @click="startChangeDescription">
-          {{ userInfo?.description || '暂时还没有介绍哦！' }}
-        </span>
-      </div>
+    <div class="fl1">
+      <n-input v-if="showDescription" v-model:value="description" ref="inputRef" round placeholder="输入简介"
+        @blur="changeDescription" size="small" style="display: inline-block;" />
+      <span v-else @click="startChangeDescription">
+        {{ userStore.userInfo?.description || '暂时还没有介绍哦！' }}
+      </span>
+    </div>
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import ChangePassword from './ChangePassword.vue'
 import Logout from './Logout.vue'
 import { NInput, useMessage } from 'naive-ui';
 import { useUserStore } from '@/store/userStore';
 import { UserApi } from '@/api/user';
 
-const userInfo = useUserStore().userInfo
+const userStore = useUserStore()
 const showDescription = ref(false)
 const inputRef = ref<InstanceType<typeof NInput>>()
 const description = ref('')
 
 const changeDescription = () => {
   showDescription.value = false
-  UserApi.updateUser({description:description.value}).then((res) => {
-    res.success && useMessage().success('修改成功！')
+  UserApi.updateUser({ description: description.value }).then((res) => {
+    res && res.success && useMessage()?.success('修改成功！')
+    userStore.setUserInfo(userStore.userInfo?.phone!, userStore.userInfo?.password!)
   })
 }
 const startChangeDescription = () => {
   showDescription.value = true
-  inputRef.value?.inputElRef?.focus()
+  nextTick(() => inputRef.value?.focus())
 }
 </script>
 

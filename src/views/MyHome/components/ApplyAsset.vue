@@ -1,12 +1,7 @@
 <template>
   <div class="apply-asset">
     <span @click="requestModal = true">去申请</span>
-    <Dialog
-      v-model="requestModal"
-      title="资产申请"
-      @cancel="resetDialog"
-      width="50%"
-    >
+    <Dialog v-model="requestModal" title="资产申请" width="50%">
       <div class="df jcsb" id="apply-asset">
         <n-tree
           style="width: 20%"
@@ -20,8 +15,7 @@
         />
         <!-- 加载条 -->
         <main class="fl1 pl-10">
-          <n-spin v-if="loading" />
-          <section v-else class="modal-section mb-10">
+          <section class="modal-section mb-10">
             <div v-for="item in data" :key="item.id" class="item-wrapper">
               <AssetItem :asset="item" />
               <n-checkbox
@@ -32,11 +26,7 @@
             </div>
           </section>
 
-          <n-pagination
-            v-model:page="searchInfo.pageNum"
-            v-model:page-size="searchInfo.pageSize"
-            :page-count="total"
-          >
+          <n-pagination v-model:page="searchInfo.pageNum" :item-count="total">
             <template #prefix> 共{{ total }}项 </template>
           </n-pagination>
         </main>
@@ -44,7 +34,7 @@
       <template #footer>
         <div class="df jcsb aic w100">
           <span>
-            已选择资产：4
+            已选择资产：{{ checkedItems.length }}
             <n-button
               quaternary
               round
@@ -55,7 +45,9 @@
               查看
             </n-button>
           </span>
-          <n-button strong secondary type="info" round> 确认 </n-button>
+          <n-button strong secondary type="info" round @click="confirmApply">
+            确认
+          </n-button>
         </div>
       </template>
       <n-drawer
@@ -97,22 +89,25 @@ import AssetItem from './AssetItem.vue'
 import Dialog from '@/components/Dialog/index.vue'
 import { CategoryApi, ICategory } from '@/api/category'
 import { AssetsApi, IAsset, IAssetSearch } from '@/api/asset'
+import { useMessage } from 'naive-ui'
+import { ApplyApi } from '@/api/apply'
 
 interface CheckedAsset extends IAsset {
   checked?: boolean
 }
 
-const emits = defineEmits(['selectNode'])
+const message = useMessage()
+
 const requestModal = ref(false)
 const treeData = ref<ICategory[]>([])
 const data = ref<CheckedAsset[]>([])
 const checkedItems = ref<CheckedAsset[]>([])
-const loading = ref(false)
 const total = ref(0)
 const searchInfo = ref<IAssetSearch>({
   name: '',
   pageNum: 1,
   pageSize: 10,
+  categoryId: undefined,
 })
 
 const useDrawer = () => {
@@ -122,31 +117,39 @@ const useDrawer = () => {
 
 const { drawerVisible } = useDrawer()
 
-const resetDialog = () => {
-  requestModal.value = false
-}
 const selectNode = (ids: number[]) => {
-  emits('selectNode', ids[0] || undefined)
+  searchInfo.value.categoryId = ids[0]
+  initData()
 }
 const checkAssetItem = (item: CheckedAsset) => {
+  if (checkedItems.value.length > 5)
+    return message.warning('一次最多申请五件物品！')
   const index = checkedItems.value.findIndex((i) => i.id == item.id)
   if (index == -1) checkedItems.value.push(item)
-  else checkedItems.value.splice(index, -1)
-  console.log(checkedItems.value)
+  else checkedItems.value.splice(index, 1)
 }
 const removeCheckedItem = (index: number) => {
-  checkedItems.value.splice(index, 1)[0].checked = false
+  checkedItems.value.splice(index, 1)
   checkedItems.value.length == 0 && (drawerVisible.value = false)
+}
+const confirmApply = () => {
+  if (!checkedItems.value.length) return message.warning('至少选择一件物品！')
+  ApplyApi.createApply(checkedItems.value.map((item) => item.id!)).then(
+    (res) => {
+      if (res.success) {
+        message.success('申请成功！')
+        checkedItems.value = []
+        requestModal.value = false
+      }
+    }
+  )
 }
 
 const initData = () => {
-  loading.value = true
-  AssetsApi.getAssets(searchInfo.value)
-    .then((res) => {
-      data.value = res.data.list
-      total.value = res.data.total
-    })
-    .finally(() => (loading.value = false))
+  AssetsApi.getAssets(searchInfo.value).then((res) => {
+    data.value = res.data.list
+    total.value = res.data.total
+  })
 }
 
 initData()
@@ -172,6 +175,10 @@ CategoryApi.getCategory(1).then((res) => {
 }
 main {
   border-left: 1px solid #eee;
+  .modal-section {
+    height: 350px;
+    overflow: auto;
+  }
 }
 
 .item-wrapper {

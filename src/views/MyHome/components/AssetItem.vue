@@ -1,6 +1,6 @@
 <template>
   <div class="ass-item-wrapper asset-item">
-    <img src="@/assets/imgs/太阳.png" width="80" height="80" alt="" />
+    <img :src="asset.picture" class="mr-10" width="80" height="80" alt="" />
     <section>
       <p class="asset-name">
         <span>{{ asset.name }}</span>
@@ -16,7 +16,9 @@
           存放位置:<span>{{ asset.location }}</span>
         </li>
         <li>
-          购买时间:<span>{{ asset.purchaseTime }}</span>
+          购买时间:<span>{{
+            dayjs(asset.purchaseTime).format('YYYY-MM-DD HH:mm:ss')
+          }}</span>
         </li>
       </ul>
     </section>
@@ -25,6 +27,7 @@
 
 <script setup lang="ts">
 import { IAsset } from '@/api/asset'
+import dayjs from 'dayjs'
 
 interface IAssetProps {
   asset: IAsset

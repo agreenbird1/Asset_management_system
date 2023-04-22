@@ -2,3 +2,11 @@
 export const WEATHER_API_KEY = 'S3qvtu7as8YDkspFi'
 
 export const CRYPTO_KEY = 'tqt'
+
+export const APPLY_STATUS_MAP = {
+  1: '审批中',
+  2: '已批准',
+  3: '已驳回',
+  4: '待签收',
+  5: '已签收',
+}

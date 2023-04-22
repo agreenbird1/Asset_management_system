@@ -28,7 +28,7 @@ export const useUserStore = defineStore('userStore', {
           userInfo: res.data,
         })
         path && router.push('/')
-      }).catch(e => window.$message.error(e.message))
+      })
     },
   },
 })

@@ -5,16 +5,20 @@
         <div class="state">
           <label>状态：</label>
           <span
-            v-for="s in states"
-            :key="s.value"
-            :class="{ active: searchInfo.state == s.value }"
-            @click="searchInfo.state = s.value"
-            >{{ s.label }}</span
+            :class="{ active: searchInfo.state == 1 }"
+            @click="searchInfo.state = 1"
+            >待处理</span
+          >
+          <span
+            :class="{ active: searchInfo.state == 2 }"
+            @click="searchInfo.state = 2"
+            >已处理</span
           >
         </div>
       </div>
       <div class="table">
         <n-data-table
+          :loading="loading"
           :columns="columns"
           :data="data"
           :pagination="pagination"
@@ -27,107 +31,121 @@
 </template>
 
 <script setup lang="ts">
-import { DataTableColumns, useMessage } from 'naive-ui'
-import { h, reactive, ref } from 'vue'
-import { TreeOption } from 'naive-ui'
+import { DataTableColumns, NButton, useMessage } from 'naive-ui'
+import { computed, h, reactive, ref, watch } from 'vue'
+import { ApplyApi, IApply } from '@/api/apply'
+import dayjs from 'dayjs'
+import { APPLY_STATUS_MAP } from '@/config/common'
+import RejectApply from './components/RejectApply.vue'
+import ResolveApply from './components/ResolveApply.vue'
+
+interface ISearchInfo {
+  pageNum: number
+  state: 1 | 2
+}
 
 const message = useMessage()
-const searchInfo = ref({
+const searchInfo = ref<ISearchInfo>({
   pageNum: 1,
   state: 1,
 })
 
-const states = [
-  {
-    label: '待处理',
-    value: 1,
-  },
-  {
-    label: '已处理',
-    value: 2,
-  }
-]
+const data = ref<IApply[]>([])
+const loading = ref(false)
 
-type Song = {
-  no: number
-  title: string
-  length: string
-}
-
-const createColumns = ({
-  play,
-}: {
-  play: (row: Song) => void
-}): DataTableColumns<Song> => {
-  return [
+const columns = computed<DataTableColumns<IApply>>(() => {
+  const columns: DataTableColumns<IApply> = [
     {
       title: '资产/物品',
-      key: 'no',
+      key: 'asset.name',
     },
     {
       title: '规格型号',
-      key: 'title',
+      key: 'asset.specification',
     },
     {
       title: '申请数量',
-      key: 'length',
+      key: 'number',
+      render() {
+        return h('span', {}, 1)
+      },
+    },
+    {
+      title: '申请人',
+      key: 'user.userName',
     },
     {
       title: '申请日期',
-      key: 'date',
+      key: 'applyTime',
+      render(row) {
+        return h('span', {}, dayjs(row.applyTime).format('YYYY-MM-DD HH:mm:ss'))
+      },
     },
     {
       title: '申请状态',
-      key: 'state',
+      key: 'status',
+      render: (row) => h('span', {}, APPLY_STATUS_MAP[row.status]),
     },
   ]
-}
+  if (searchInfo.value.state == 1) {
+    columns.push({
+      title: '操作',
+      key: 'option',
+      render(row) {
+        return [
+          h(RejectApply, { apply: row, onFlush: initData }),
+          h(ResolveApply, { apply: row, onFlush: initData }),
+        ]
+      },
+    })
+  } else
+    columns.push(
+      {
+        title: '备注/原因',
+        key: 'both',
+        render(apply) {
+          return h(
+            'span',
+            {},
+            apply.status == 2 ? apply.remark : apply.rejectReason
+          )
+        },
+      },
+      {
+        title: '处理人',
+        key: 'approveUser',
+        render(apply) {
+          return h(
+            'span',
+            {},
+            apply.approveUser?.userName
+          )
+        },
+      }
+    )
 
-const data: Song[] = [
-  { no: 3, title: 'Wonderwall', length: '4:18' },
-  { no: 4, title: "Don't Look Back in Anger", length: '4:48' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-]
-
-const columns = createColumns({
-  play(row: Song) {
-    message.info(`Play ${row.title}`)
-  },
+  return columns
 })
 const pagination = reactive({
-  page: 2,
-  pageSize: 5,
-  showSizePicker: true,
-  pageSizes: [5, 10, 20],
+  page: searchInfo.value.pageNum,
+  pageSize: 10,
   onChange: (page: number) => {
     searchInfo.value.pageNum = page
     pagination.page = page
   },
-  onUpdatePageSize: (pageSize: number) => {
-    pagination.pageSize = pageSize
-    pagination.page = 1
-  },
 })
 
-const requestModal = ref(false)
-const treeData = ref<TreeOption[]>([
-  {
-    label: 'data1',
-    key: 1,
-    value: 1,
-  },
-  {
-    label: 'data2',
-    key: 2,
-    value: 2,
-  },
-])
+const initData = () => {
+  loading.value = true
+  const { state, pageNum } = searchInfo.value
+  ApplyApi.getApprovalApplies(state, pageNum)
+    .then((res) => {
+      data.value = res.data.list
+    })
+    .finally(() => (loading.value = false))
+}
+
+watch(() => searchInfo.value, initData, { immediate: true, deep: true })
 </script>
 
 <style scoped lang="less">
@@ -138,12 +156,14 @@ const treeData = ref<TreeOption[]>([
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   &-header {
     margin-bottom: 24px;
     color: var(--main-color);
     border-radius: 15px;
     padding: 10px 20px;
     background-color: var(--projects-section);
+
     p {
       display: flex;
       justify-content: space-between;
@@ -154,6 +174,7 @@ const treeData = ref<TreeOption[]>([
       margin: 0;
       margin-bottom: 20px;
       color: var(--main-color);
+
       span {
         display: inline-block;
         height: 24px;
@@ -166,10 +187,12 @@ const treeData = ref<TreeOption[]>([
         border-radius: 5px;
       }
     }
+
     .state {
       label {
         margin-right: 50px;
       }
+
       span {
         font-size: 16px;
         font-weight: 300;
@@ -179,12 +202,14 @@ const treeData = ref<TreeOption[]>([
         cursor: pointer;
         margin-right: 20px;
       }
+
       .active {
         background: var(--link-color-hover);
         color: #ffffff;
       }
     }
   }
+
   .table {
     padding: 10px 20px;
     flex: 1;

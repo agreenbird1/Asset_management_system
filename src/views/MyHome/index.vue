@@ -21,6 +21,8 @@
           :pagination="pagination"
           flex-height
           style="height: 100%"
+          remote
+          :loading="loading"
         />
       </div>
     </div>
@@ -30,9 +32,12 @@
 
 <script setup lang="ts">
 import { DataTableColumns, NButton, useMessage } from 'naive-ui'
-import { h, reactive, ref } from 'vue'
+import { Text, h, reactive, ref, watch } from 'vue'
 import ProfileSection from './components/ProfileSection.vue'
 import ApplyAsset from './components/ApplyAsset.vue'
+import { ApplyApi, IApply } from '@/api/apply'
+import dayjs from 'dayjs'
+import { APPLY_STATUS_MAP } from '@/config/common'
 
 type StateValue = 1 | 2 | 3 | 4 | 5
 
@@ -43,8 +48,7 @@ type StateItem = {
 
 type SearchInfo = {
   pageNum: number
-  pageSize?: number
-  state?: StateValue
+  state: StateValue
 }
 
 const message = useMessage()
@@ -67,81 +71,63 @@ const states: StateItem[] = [
     value: 3,
   },
   {
-    label: '待签收',
-    value: 4,
-  },
-  {
     label: '已签收',
     value: 5,
   },
 ]
 
-type Song = {
-  no: number
-  title: string
-  length: string
-}
+const data = ref<IApply[]>([])
+const loading = ref(false)
 
-const createColumns = ({
-  play,
-}: {
-  play: (row: Song) => void
-}): DataTableColumns<Song> => {
-  return [
-    {
-      title: '资产/物品',
-      key: 'no',
-    },
-    {
-      title: '规格型号',
-      key: 'title',
-    },
-    {
-      title: '申请数量',
-      key: 'length',
-    },
-    {
-      title: '申请日期',
-      key: 'date',
-    },
-    {
-      title: '申请状态',
-      key: 'state',
-    },
-  ]
-}
-
-const data: Song[] = [
-  { no: 3, title: 'Wonderwall', length: '4:18' },
-  { no: 4, title: "Don't Look Back in Anger", length: '4:48' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-  { no: 12, title: 'Champagne Supernova', length: '7:27' },
-]
-
-const columns = createColumns({
-  play(row: Song) {
-    message.info(`Play ${row.title}`)
+const columns: DataTableColumns<IApply> = [
+  {
+    title: '资产/物品',
+    key: 'asset.name',
   },
-})
+  {
+    title: '规格型号',
+    key: 'asset.specification',
+  },
+  {
+    title: '申请数量',
+    key: '',
+    render() {
+      return h('span', {}, 1)
+    },
+  },
+  {
+    title: '申请日期',
+    key: 'applyTime',
+    render(row) {
+      return h('span', {}, dayjs(row.applyTime).format('YYYY-MM-DD HH:mm:ss'))
+    },
+  },
+  {
+    title: '申请状态',
+    key: 'status',
+    render: (row) => h('span', {}, APPLY_STATUS_MAP[row.status]),
+  },
+]
 const pagination = reactive({
-  page: 2,
-  pageSize: 5,
-  showSizePicker: true,
-  pageSizes: [5, 10, 20],
+  page: searchInfo.value.pageNum,
+  pageSize: 10,
   onChange: (page: number) => {
     searchInfo.value.pageNum = page
     pagination.page = page
-  },
-  onUpdatePageSize: (pageSize: number) => {
-    pagination.pageSize = pageSize
-    pagination.page = 1
-  },
+  }
 })
+
+const initData = () => {
+  loading.value = true
+  const { state, pageNum } = searchInfo.value
+  ApplyApi.getApplies(state, pageNum)
+    .then((res) => {
+      data.value = res.data.list
+    })
+    .finally(() => (loading.value = false))
+}
+
+watch(() => searchInfo.value, initData, { immediate: true, deep: true })
 </script>
 
 <style scoped lang="less">

@@ -37,7 +37,7 @@ export class UserApi {
   }
 
   static updateUser(param: Partial<IUser>) {
-    return request.patch(`/user/status/${userInfo?.id}`, param)
+    return request.patch(`/user/${userInfo?.id}`, param)
   }
 
   static changeUserRole(id: number, role: 2 | 1) {

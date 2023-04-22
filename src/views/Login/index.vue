@@ -32,17 +32,12 @@
 
 <script setup lang="ts">
 import { CommonApi } from '@/api/common'
-import LoginApi from '@/api/login'
-import { asideAuthority } from '@/config/authority'
 import { phoneReg } from '@/config/regExp'
 import { useUserStore } from '@/store/userStore'
 import { encrypt } from '@/utils/crypto'
-import storage from '@/utils/storage'
 import { useMessage } from 'naive-ui'
 import { onUnmounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const userStore = useUserStore()
 const loginActive = ref(false)
 const message = useMessage()
@@ -65,18 +60,7 @@ const useLogin = () => {
     if (!phoneReg.test(phone)) return message.warning('手机号格式错误！')
     if (password.length > 16 || password.length < 6)
       return message.warning('密码长度在6-16位！')
-    LoginApi.login(phone, encrypt(password)).then((res) => {
-      if (res.success) {
-        // 存储到 store
-        storage.setSession('userState', {
-          userInfo: res.data,
-        })
-        userStore.$patch({
-          userInfo: res.data,
-        })
-        router.push('/')
-      } else message.error(res.message)
-    })
+    userStore.setUserInfo(phone, encrypt(password), '/')
   }
   return {
     loginForm,

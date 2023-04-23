@@ -26,7 +26,10 @@
         />
       </div>
     </div>
-    <ProfileSection />
+    <div>
+      <ProfileSection />
+      <AnnouncementSection />
+    </div>
   </div>
 </template>
 
@@ -34,6 +37,7 @@
 import { DataTableColumns, NButton, useMessage } from 'naive-ui'
 import { Text, h, reactive, ref, watch } from 'vue'
 import ProfileSection from './components/ProfileSection.vue'
+import AnnouncementSection from './components/AnnouncementSection.vue'
 import ApplyAsset from './components/ApplyAsset.vue'
 import { ApplyApi, IApply } from '@/api/apply'
 import dayjs from 'dayjs'

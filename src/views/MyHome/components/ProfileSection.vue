@@ -60,7 +60,7 @@ const startChangeDescription = () => {
   flex: 1;
   width: 100%;
   padding: 20px;
-  height: 250px;
+  height: 200px;
   border-radius: 30px;
   position: relative;
   overflow: auto;

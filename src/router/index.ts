@@ -45,6 +45,12 @@ const router = createRouter({
           name: 'AssetMonitoring',
           component: () => import('@/views/AssetMonitoring/index.vue'),
         },
+        {
+          path: 'announcement-configuration',
+          name: 'AnnouncementConfiguration',
+          component: () =>
+            import('@/views/AnnouncementConfiguration/index.vue'),
+        },
       ],
       beforeEnter(to) {
         if (to.path !== '/login' && !userStore.userInfo) {

@@ -1,5 +1,6 @@
 import { useUserStore } from '@/store/userStore'
 import request, { ListInfo, PageInfo } from './request'
+import pinia from "../store/index"
 
 export interface IUser {
   id?: number
@@ -20,7 +21,7 @@ export interface IUserSearch extends PageInfo {
   categoryId?: number
 }
 
-const userInfo = useUserStore().userInfo
+const userInfo = useUserStore(pinia).userInfo
 
 export class UserApi {
   static createUser(param: IUser) {

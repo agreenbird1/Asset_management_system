@@ -2,8 +2,9 @@ import { useUserStore } from '@/store/userStore'
 import request, { ListInfo, PageInfo } from './request'
 import { IAsset } from './asset'
 import { IUser } from './user'
+import pinia from "../store/index"
 
-const userState = useUserStore()
+const userState = useUserStore(pinia)
 
 export type ApplyStatus = 1 | 2 | 3 | 4 | 5
 

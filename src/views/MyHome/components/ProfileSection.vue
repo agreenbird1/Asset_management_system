@@ -58,7 +58,7 @@ const startChangeDescription = () => {
   background-color: var(--projects-section);
   margin-left: 24px;
   flex: 1;
-  width: 100%;
+  width: 360px;
   padding: 20px;
   height: 200px;
   border-radius: 30px;

@@ -2,10 +2,6 @@
   <header>
     <div class="header-info df aic jcsb">
       <div>当前资产数量：<span class="num">4</span></div>
-      <div>
-        <n-button quaternary color="#6a83d0"> 显示全部 </n-button>
-        <n-button quaternary color="#6a83d0"> 资产交接 </n-button>
-      </div>
     </div>
     <div class="filter-item-list">
       <div
@@ -23,7 +19,6 @@
             {{ option.label }}
           </span>
         </div>
-        <span>4</span>
       </div>
     </div>
   </header>
@@ -32,7 +27,6 @@
 <script setup lang="ts">
 import {
   CheckmarkSharp,
-  Close,
   Hammer,
   HourglassOutline,
 } from '@vicons/ionicons5'
@@ -46,23 +40,17 @@ const filterOptions = [
     iconColor: '#c3cff4',
   },
   {
-    icon: Close,
-    label: '保修中',
-    value: 2,
-    iconColor: '#f44f4d',
-  },
-  {
     icon: Hammer,
     label: '维修中',
-    value: 3,
+    value: 2,
     iconColor: '#fa8a2f',
   },
   {
     icon: HourglassOutline,
     label: '退还中',
-    value: 4,
+    value: 3,
     iconColor: '#a0a7bb',
-  },
+  }
 ]
 
 const searchInfo = reactive({

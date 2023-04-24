@@ -98,16 +98,20 @@ const columns = ref<DataTableColumns<IUser>>([
             value: 1,
           },
           {
-            label: '管理员',
+            label: '维修员',
             value: 2,
           },
           {
-            label: '超级管理员',
+            label: '管理员',
             value: 3,
+          },
+          {
+            label: '超级管理员',
+            value: 4,
             disabled: true,
           },
         ],
-        disabled: row.role == 3,
+        disabled: row.role == 4,
         onUpdateValue(v: 1 | 2) {
           UserApi.changeUserRole(row.id!, v).then(initData)
         },
@@ -125,7 +129,7 @@ const columns = ref<DataTableColumns<IUser>>([
             size: 'small',
             secondary: true,
             color: row.status == 0 ? '#6a83d0' : 'red',
-            disabled: row.role == 3,
+            disabled: row.role == 4,
             onClick() {
               UserApi.changeUserStatus(row.id!, row.status ? 0 : 1).then(() => {
                 message.success('更新成功！')
@@ -142,7 +146,7 @@ const columns = ref<DataTableColumns<IUser>>([
             class: 'ml-5',
             secondary: true,
             type: 'error',
-            disabled: row.role == 3,
+            disabled: row.role == 4,
             onClick() {
               UserApi.deleteUser(row.id!).then(() => {
                 message.success('删除成功！')

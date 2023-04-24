@@ -5,7 +5,8 @@ import {
   ColorFilterOutline,
   RecordingOutline,
   EllipsisVerticalCircleOutline,
-  Settings
+  SettingsOutline,
+  BuildOutline
 } from '@vicons/ionicons5'
 
 export type AsideAuthorityItem = {
@@ -29,6 +30,12 @@ export const asideAuthority: AsideAuthorityItem[] = [
   },
   {
     index: 2,
+    label: '维修处理',
+    icon: BuildOutline,
+    route: '/maintenance',
+  },
+  {
+    index: 3,
     label: '企业/部门成员',
     icon: ColorFilterOutline,
     route: '/enterprise-member',
@@ -40,13 +47,13 @@ export const asideAuthority: AsideAuthorityItem[] = [
     route: '/approval',
   },
   {
-    index: 3,
+    index: 4,
     label: '资产监控',
     icon: RecordingOutline,
     route: '/asset-monitoring',
   },
   {
-    index: 3,
+    index: 4,
     label: '企业资产管理',
     icon: EllipsisVerticalCircleOutline,
     route: '/enterprise-assets',
@@ -54,7 +61,7 @@ export const asideAuthority: AsideAuthorityItem[] = [
   {
     index: 2,
     label: '公告配置',
-    icon: Settings,
+    icon: SettingsOutline,
     route: '/announcement-configuration',
   },
 ]

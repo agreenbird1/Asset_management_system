@@ -28,8 +28,8 @@ import { computed } from 'vue'
 
 const userState = useUserStore()
 const permissions = computed(() =>
-  asideAuthority.filter(
-    (permission) => permission.index <= (userState.userInfo?.role || 1)
+  asideAuthority.filter((permission) =>
+    permission.index.includes(userState.userInfo?.role || 1)
   )
 )
 </script>

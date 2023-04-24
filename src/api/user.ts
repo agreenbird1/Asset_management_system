@@ -12,7 +12,7 @@ export interface IUser {
   avatar?: string
   phone: string
   status?: 0 | 1
-  role?: 1 | 2 | 3
+  role?: 1 | 2 | 3 | 4
 }
 
 export interface IUserSearch extends PageInfo {

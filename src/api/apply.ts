@@ -11,6 +11,7 @@ export type ApplyStatus = 1 | 2 | 3 | 4 | 5
 export interface IApply {
   applyTime: string
   approveTime?: string
+  signTime?: string
   asset: IAsset
   id: number
   rejectReason?: string

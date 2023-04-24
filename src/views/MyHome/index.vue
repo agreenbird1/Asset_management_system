@@ -35,13 +35,14 @@
 
 <script setup lang="ts">
 import { DataTableColumns, NButton, useMessage } from 'naive-ui'
-import { Text, h, reactive, ref, watch } from 'vue'
+import { Text, computed, h, reactive, ref, watch } from 'vue'
 import ProfileSection from './components/ProfileSection.vue'
 import AnnouncementSection from './components/AnnouncementSection.vue'
 import ApplyAsset from './components/ApplyAsset.vue'
 import { ApplyApi, IApply } from '@/api/apply'
 import dayjs from 'dayjs'
 import { APPLY_STATUS_MAP } from '@/config/common'
+import SignAsset from './components/SignAsset.vue'
 
 type StateValue = 1 | 2 | 3 | 4 | 5
 
@@ -83,42 +84,55 @@ const states: StateItem[] = [
 const data = ref<IApply[]>([])
 const loading = ref(false)
 
-const columns: DataTableColumns<IApply> = [
-  {
-    title: '资产/物品',
-    key: 'asset.name',
-  },
-  {
-    title: '规格型号',
-    key: 'asset.specification',
-  },
-  {
-    title: '申请数量',
-    key: '',
-    render() {
-      return h('span', {}, 1)
+const columns = computed<DataTableColumns<IApply>>(() => {
+  const columns: DataTableColumns<IApply> = [
+    {
+      title: '资产/物品',
+      key: 'asset.name',
     },
-  },
-  {
-    title: '申请日期',
-    key: 'applyTime',
-    render(row) {
-      return h('span', {}, dayjs(row.applyTime).format('YYYY-MM-DD HH:mm:ss'))
+    {
+      title: '规格型号',
+      key: 'asset.specification',
     },
-  },
-  {
-    title: '申请状态',
-    key: 'status',
-    render: (row) => h('span', {}, APPLY_STATUS_MAP[row.status]),
-  },
-]
+    {
+      title: '申请数量',
+      key: '',
+      render() {
+        return h('span', {}, 1)
+      },
+    },
+    {
+      title: '申请日期',
+      key: 'applyTime',
+      render(row) {
+        return h('span', {}, dayjs(row.applyTime).format('YYYY-MM-DD HH:mm:ss'))
+      },
+    },
+    {
+      title: '申请状态',
+      key: 'status',
+      render: (row) => h('span', {}, APPLY_STATUS_MAP[row.status]),
+    },
+  ]
+  if (searchInfo.value.state == 2) {
+    columns.push({
+      title: '操作',
+      key: 'option',
+      render(row) {
+        return [h(SignAsset, { apply: row, onFlush: initData })]
+      },
+    })
+  }
+  return columns
+})
+
 const pagination = reactive({
   page: searchInfo.value.pageNum,
   pageSize: 10,
   onChange: (page: number) => {
     searchInfo.value.pageNum = page
     pagination.page = page
-  }
+  },
 })
 
 const initData = () => {

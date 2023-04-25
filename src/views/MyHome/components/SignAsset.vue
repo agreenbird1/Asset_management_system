@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { ApplyApi, IApply } from '@/api/apply'
 import Dialog from '@/components/Dialog/index.vue'
+import dayjs from 'dayjs'
 import { ref } from 'vue'
 
 const props = defineProps<{

@@ -96,6 +96,8 @@ interface CheckedAsset extends IAsset {
   checked?: boolean
 }
 
+const emits = defineEmits(['flush'])
+
 const message = useMessage()
 
 const requestModal = ref(false)
@@ -140,6 +142,7 @@ const confirmApply = () => {
         message.success('申请成功！')
         checkedItems.value = []
         requestModal.value = false
+        emits('flush')
       }
     }
   )

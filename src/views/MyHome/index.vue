@@ -2,7 +2,7 @@
   <div class="df h100">
     <div class="projects-section">
       <div class="projects-section-header">
-        <p>我的申请 <ApplyAsset /></p>
+        <p>我的申请 <ApplyAsset @flush="initData" /></p>
         <div class="state">
           <label>状态：</label>
           <span
@@ -115,12 +115,27 @@ const columns = computed<DataTableColumns<IApply>>(() => {
     },
   ]
   if (searchInfo.value.state == 2) {
-    columns.push({
-      title: '操作',
-      key: 'option',
-      render(row) {
-        return [h(SignAsset, { apply: row, onFlush: initData })]
+    columns.push(
+      {
+        title: '备注',
+        key: 'remark',
+        render(row) {
+          return h('span', {}, row.remark || '-')
+        },
       },
+      {
+        title: '操作',
+        key: 'option',
+        render(row) {
+          return [h(SignAsset, { apply: row, onFlush: initData })]
+        },
+      }
+    )
+  }
+  if (searchInfo.value.state == 3) {
+    columns.push({
+      title: '原因',
+      key: 'rejectReason',
     })
   }
   return columns

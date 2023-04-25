@@ -8,8 +8,8 @@
         class="filter-item"
         v-for="option in filterOptions"
         :key="option.value"
-        :class="{ active: option.value == searchInfo.status }"
-        @click="searchInfo.status = option.value"
+        :class="{ active: option.value == myStatus }"
+        @click="myStatus = option.value"
       >
         <div class="df aic">
           <n-icon class="mr-5" size="24" :color="option.iconColor">
@@ -25,19 +25,20 @@
 </template>
 
 <script setup lang="ts">
-import {
-  CheckmarkSharp,
-  Hammer,
-  HourglassOutline,
-} from '@vicons/ionicons5'
-import { reactive } from 'vue'
+import { CheckmarkSharp, Hammer, HourglassOutline } from '@vicons/ionicons5'
+import { useVModel } from '@vueuse/core'
+
+const props = defineProps<{
+  modelValue: number
+}>()
+const emits = defineEmits(['update:modelValue'])
 
 const filterOptions = [
   {
     icon: CheckmarkSharp,
     label: '正常资产',
     value: 1,
-    iconColor: '#c3cff4',
+    iconColor: 'lightgreen',
   },
   {
     icon: Hammer,
@@ -50,12 +51,10 @@ const filterOptions = [
     label: '退还中',
     value: 3,
     iconColor: '#a0a7bb',
-  }
+  },
 ]
 
-const searchInfo = reactive({
-  status: 1,
-})
+const myStatus = useVModel(props, 'modelValue', emits)
 </script>
 
 <style scoped lang="less">

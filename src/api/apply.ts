@@ -2,11 +2,12 @@ import { useUserStore } from '@/store/userStore'
 import request, { ListInfo, PageInfo } from './request'
 import { IAsset } from './asset'
 import { IUser } from './user'
-import pinia from "../store/index"
+import pinia from '../store/index'
 
 const userState = useUserStore(pinia)
 
 export type ApplyStatus = 1 | 2 | 3 | 4 | 5
+export type MyAssetStatus = 1 | 2 | 3
 
 export interface IApply {
   applyTime: string
@@ -20,6 +21,7 @@ export interface IApply {
   user: IUser
   approveUser: IUser
   approveUserId: number
+  myStatus: MyAssetStatus
 }
 
 export class ApplyApi {
@@ -32,6 +34,14 @@ export class ApplyApi {
   static getApplies(status: 1 | 2 | 3 | 4 | 5, pageNum: number) {
     return request.get<ListInfo<IApply>>('/apply', {
       status,
+      userId: userState.userInfo?.id,
+      pageNum,
+    })
+  }
+
+  static getMyAssets(myStatus: 1 | 2 | 3, pageNum: number) {
+    return request.get<ListInfo<IApply>>('/apply/my-asset', {
+      myStatus,
       userId: userState.userInfo?.id,
       pageNum,
     })

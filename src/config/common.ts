@@ -10,3 +10,11 @@ export const APPLY_STATUS_MAP = {
   4: '待签收',
   5: '已签收',
 }
+
+export const MONITOR_TYPE = {
+  1:'新增',
+  2:'领用',
+  3:'维修',
+  4:'退还',
+  5:'报废',
+}

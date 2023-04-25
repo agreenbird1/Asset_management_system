@@ -23,7 +23,6 @@
         :loading="loading"
         :bordered="false"
         flex-height
-        style="height: 100%"
         :remote="true"
       />
     </main>
@@ -89,9 +88,10 @@ const columns = ref<DataTableColumns<IAsset>>([
             secondary: true,
             color: row.status == 0 ? '#6a83d0' : 'red',
             onClick() {
-              AssetsApi.changeAssetStatus(row.id!, row.status ? 0 : 1).then(
+              AssetsApi.updateAsset(row.id!, row.status ? 0 : 1).then(
                 () => {
                   message.success('更新成功！')
+                  initData()
                 }
               )
             },
@@ -114,17 +114,10 @@ const searchInfo = ref<IAssetSearch>({
 const pagination = computed<PaginationProps>(() => ({
   page: searchInfo.value.pageNum,
   pageSize: searchInfo.value.pageSize,
-  showSizePicker: true,
-  pageSizes: [10, 20],
   itemCount: total.value,
 
   onChange: (page: number) => {
     searchInfo.value.pageNum = page
-    initData()
-  },
-  onUpdatePageSize: (pageSize: number) => {
-    searchInfo.value.pageSize = pageSize
-    searchInfo.value.pageNum = 1
     initData()
   },
   prefix({ itemCount }) {
@@ -153,6 +146,8 @@ initData()
 <style scoped lang="less">
 .enterprise-assets {
   height: 100%;
+  display: flex;
+  flex-direction: column;
   .search-header {
     padding: 10px;
     background-color: #fff;
@@ -170,7 +165,6 @@ initData()
   main {
     flex: 1;
     display: flex;
-    height: 100%;
 
     .classify-tree {
       flex: 30%;

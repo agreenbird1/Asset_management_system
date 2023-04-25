@@ -33,7 +33,7 @@ export class AssetsApi {
   static deleteAsset(id: number) {
     return request.delete(`/asset/${id}`)
   }
-  static changeAssetStatus(id: number, status: 0 | 1) {
-    return request.post(`/asset/status`, { status, id })
+  static updateAsset(id: number, status: 0 | 1) {
+    return request.patch(`/asset/${id}`, { status })
   }
 }

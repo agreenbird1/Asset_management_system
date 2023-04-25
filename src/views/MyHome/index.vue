@@ -138,6 +138,12 @@ const columns = computed<DataTableColumns<IApply>>(() => {
       key: 'rejectReason',
     })
   }
+  if (searchInfo.value.state == 5) {
+    columns.push({
+      title: '签收时间',
+      key: 'signTime',
+    })
+  }
   return columns
 })
 

@@ -1,4 +1,8 @@
+import { useUserStore } from '@/store/userStore'
 import request, { ListInfo, PageInfo } from './request'
+import pinia from '@/store/index'
+
+const userStore = useUserStore(pinia)
 
 export type IAsset = {
   id?: number
@@ -21,7 +25,7 @@ export interface IAssetSearch extends PageInfo {
 
 export class AssetsApi {
   static createAsset(param: Partial<IAsset>) {
-    return request.post('/asset', param)
+    return request.post('/asset', { ...param, userId: userStore.userInfo?.id })
   }
   static getAssets(param: IAssetSearch) {
     return request.post<ListInfo<IAsset>>('/asset/list', param)

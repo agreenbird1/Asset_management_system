@@ -14,6 +14,7 @@ export interface IApply {
   applyTime: string
   approveTime?: string
   signTime?: string
+  returnTime?: string
   asset: IAsset
   id: number
   rejectReason?: string

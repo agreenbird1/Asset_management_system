@@ -24,9 +24,11 @@
       </n-form-item>
       <n-form-item label="图片" path="picture">
         <n-upload
-          action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+          :on-update:file-list="uploadFiles"
+          :default-upload="false"
           list-type="image-card"
           :max="1"
+          :on-remove="() => (formValue.picture = '')"
         />
       </n-form-item>
     </n-form>
@@ -36,7 +38,8 @@
 <script setup lang="ts">
 import { ApplyApi, IApply } from '@/api/apply'
 import Dialog from '@/components/Dialog/index.vue'
-import { FormInst } from 'naive-ui'
+import { sendSingleFile } from '@/utils/uploadFiles';
+import { FormInst, UploadFileInfo } from 'naive-ui'
 import { ref } from 'vue'
 
 const props = defineProps<{
@@ -64,14 +67,23 @@ const rules = {
   },
 }
 
+const uploadFiles = (files: UploadFileInfo[]) => {
+  files.forEach(async (file) => {
+    await sendSingleFile(file)
+    formValue.value.picture = file.url!
+  })
+}
+
 const confirm = () => {
   formRef.value?.validate((e) => {
     if (!e) {
       const { description, picture } = formValue.value
-      ApplyApi.maintenance(props.asset.id, { description, picture }).then(res => {
-        emits('flush')
-        repairDialog.value = false
-      })
+      ApplyApi.maintenance(props.asset.id, { description, picture }).then(
+        (res) => {
+          emits('flush')
+          repairDialog.value = false
+        }
+      )
     }
   })
 }

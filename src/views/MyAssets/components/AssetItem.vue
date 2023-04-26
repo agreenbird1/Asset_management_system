@@ -5,14 +5,17 @@
       <section class="ml-5">
         <p class="asset-name">
           <span>{{ asset.asset.name }}</span>
-          <RepairButton v-if="asset.myStatus == 1" :asset="asset" @flush="$emit('flush')" />
-          <HandBackButton v-if="asset.myStatus == 2" :asset="asset" @flush="$emit('flush')" />
-          <div v-if="asset.myStatus == 3" class="status">维修中</div>
+        <div v-if="asset.myStatus == 1">
+          <RepairButton :asset="asset" @flush="$emit('flush')" />
+          <HandBackButton :asset="asset" @flush="$emit('flush')" />
+        </div>
+        <div v-if="asset.myStatus == 2" class="status">维修中</div>
         </p>
         <ul>
           <li>资产编码: <span>{{ asset.asset.serialNumber }}</span></li>
           <li>规格型号:<span>{{ asset.asset.specification }}</span></li>
           <li>签收时间:<span>{{ asset.signTime }}</span></li>
+          <li v-if="asset.myStatus == 3">退还时间:<span>{{ asset.returnTime }}</span></li>
           <li>处理人:<span>{{ asset.approveUser.userName }}</span></li>
         </ul>
       </section>
@@ -35,8 +38,10 @@ defineEmits(['flush'])
 .ass-item-wrapper {
   display: flex;
   cursor: pointer;
+
   section {
     flex-grow: 1;
+
     .asset-name {
       display: flex;
       justify-content: space-between;
@@ -44,6 +49,7 @@ defineEmits(['flush'])
       font-weight: 600;
       margin-bottom: 5px;
     }
+
     .status {
       background: rgb(241, 176, 55);
       font-size: 12px;
@@ -54,14 +60,17 @@ defineEmits(['flush'])
       line-height: 16px;
       border-radius: 20px;
     }
+
     li {
       display: flex;
       justify-content: space-between;
     }
   }
 }
+
 .detail-list {
   width: 100%;
+
   li {
     display: flex;
     justify-content: space-between;

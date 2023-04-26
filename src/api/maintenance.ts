@@ -14,3 +14,13 @@ export type IMaintenance = {
   applyUser: IUser
   maintenanceUser: IUser
 }
+
+export class MaintenanceApi {
+  static get(pageNum: number, status: MaintenanceStatus, userId?: number) {
+    return request.get('/maintenance',{
+      pageNum,
+      status,
+      userId
+    })
+  }
+}

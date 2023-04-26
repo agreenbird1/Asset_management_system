@@ -3,6 +3,7 @@ import request, { ListInfo, PageInfo } from './request'
 import { IAsset } from './asset'
 import { IUser } from './user'
 import pinia from '../store/index'
+import { IMaintenance } from './maintenance'
 
 const userState = useUserStore(pinia)
 
@@ -57,5 +58,9 @@ export class ApplyApi {
 
   static updateApply(id: number, param: Partial<IApply>) {
     return request.patch(`/apply/${id}`, param)
+  }
+
+  static maintenance(id: number, param: Partial<IMaintenance>) {
+    return request.patch(`/apply/maintenance/${id}`, param)
   }
 }

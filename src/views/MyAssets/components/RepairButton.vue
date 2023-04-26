@@ -3,7 +3,12 @@
     报修
   </n-button>
 
-  <Dialog v-model="repairDialog" title="报修">
+  <Dialog
+    v-model="repairDialog"
+    title="报修"
+    @cancel="cancel"
+    @confirm="confirm"
+  >
     <n-form
       ref="formRef"
       :label-width="80"
@@ -11,9 +16,9 @@
       label-placement="left"
       :rules="rules"
     >
-      <n-form-item label="报修原因" path="reason">
+      <n-form-item label="报修原因" path="description">
         <n-input
-          v-model:value="formValue.reason"
+          v-model:value="formValue.description"
           placeholder="请输入报修原因"
         />
       </n-form-item>
@@ -29,23 +34,50 @@
 </template>
 
 <script setup lang="ts">
+import { ApplyApi, IApply } from '@/api/apply'
 import Dialog from '@/components/Dialog/index.vue'
 import { FormInst } from 'naive-ui'
 import { ref } from 'vue'
 
+const props = defineProps<{
+  asset: IApply
+}>()
+const emits = defineEmits(['flush'])
+
 const repairDialog = ref(false)
 const formRef = ref<FormInst | null>(null)
 const formValue = ref({
-  reason: '',
+  description: '',
   picture: '',
 })
 
 const rules = {
-  reason: {
+  description: {
     required: true,
-    message: '请输入报修原因',
-    trigger: ['input'],
+    message: '请输入情况描述',
+    trigger: ['blur'],
   },
+  picture: {
+    required: true,
+    message: '请上传物品图片',
+    trigger: ['change'],
+  },
+}
+
+const confirm = () => {
+  formRef.value?.validate((e) => {
+    if (!e) {
+      const { description, picture } = formValue.value
+      ApplyApi.maintenance(props.asset.id, { description, picture }).then(res => {
+        emits('flush')
+        repairDialog.value = false
+      })
+    }
+  })
+}
+const cancel = () => {
+  formValue.value = { description: '', picture: '' }
+  repairDialog.value = false
 }
 </script>
 

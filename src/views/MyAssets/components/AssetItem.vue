@@ -4,7 +4,10 @@
       <img :src="asset.asset.picture" width="120" height="120" alt="" />
       <section class="ml-5">
         <p class="asset-name">
-          <span>{{ asset.asset.name }}</span> <span class="status">在用</span>
+          <span>{{ asset.asset.name }}</span>
+          <RepairButton v-if="asset.myStatus == 1" :asset="asset" @flush="$emit('flush')" />
+          <HandBackButton v-if="asset.myStatus == 2" :asset="asset" @flush="$emit('flush')" />
+          <div v-if="asset.myStatus == 3" class="status">维修中</div>
         </p>
         <ul>
           <li>资产编码: <span>{{ asset.asset.serialNumber }}</span></li>
@@ -19,10 +22,13 @@
 
 <script setup lang="ts">
 import { IApply } from '@/api/apply'
+import RepairButton from './RepairButton.vue';
+import HandBackButton from './HandBackButton.vue';
 
 defineProps<{
   asset: IApply
 }>()
+defineEmits(['flush'])
 </script>
 
 <style scoped lang="less">
@@ -39,7 +45,7 @@ defineProps<{
       margin-bottom: 5px;
     }
     .status {
-      background: rgb(197, 243, 197);
+      background: rgb(241, 176, 55);
       font-size: 12px;
       color: #fff;
       padding: 2px 10px;

@@ -3,10 +3,19 @@
     <FilterHeader v-model="searchInfo.myStatus" />
     <main>
       <div class="assets-wrapper">
-        <AssetItem v-for="asset in data" :key="asset.id" :asset="asset" />
+        <AssetItem
+          v-for="asset in data"
+          :key="asset.id"
+          :asset="asset"
+          @flush="initData"
+        />
       </div>
       <footer>
-        <n-pagination v-model:page="searchInfo.pageNum" :item-count="total" :page-size="10" />
+        <n-pagination
+          v-model:page="searchInfo.pageNum"
+          :item-count="total"
+          :page-size="10"
+        />
       </footer>
     </main>
   </div>

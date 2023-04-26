@@ -8,7 +8,7 @@ import { IMaintenance } from './maintenance'
 const userState = useUserStore(pinia)
 
 export type ApplyStatus = 1 | 2 | 3 | 4 | 5
-export type MyAssetStatus = 1 | 2 | 3
+export type MyAssetStatus = 1 | 2 | 3 | 4 // 正常使用、维修中、退还中、已报废
 
 export interface IApply {
   applyTime: string
@@ -40,7 +40,7 @@ export class ApplyApi {
     })
   }
 
-  static getMyAssets(myStatus: 1 | 2 | 3, pageNum: number) {
+  static getMyAssets(myStatus: MyAssetStatus, pageNum: number) {
     return request.get<ListInfo<IApply>>('/apply/my-asset', {
       myStatus,
       userId: userState.userInfo?.id,

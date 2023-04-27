@@ -2,7 +2,7 @@
   <div class="announcement-section">
     <p class="title">{{ announcement?.title }}</p>
     <section class="content">{{ announcement?.content }} —— {{ announcement?.userName }}</section>
-    <div style="text-align: center">
+    <div v-if="announcement?.picture" style="text-align: center">
       <n-image :src="announcement?.picture" width="280" height="180"></n-image>
     </div>
   </div>

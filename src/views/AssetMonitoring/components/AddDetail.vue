@@ -2,11 +2,9 @@
   <div class="add-detail">
     <div class="ass-item-wrapper">
       <img :src="monitorDetail?.asset.picture" width="120" height="120" alt="" />
-      <section class="ml-5">
-        <p class="asset-name">
-          <span>{{ monitorDetail?.asset.name }}</span>
-        </p>
+      <section class="ml-25">
         <ul>
+          <li>资产名称: <span>{{ monitorDetail?.asset.name }}</span></li>
           <li>资产编码: <span>{{ monitorDetail?.asset.serialNumber }}</span></li>
           <li>规格型号:<span>{{ monitorDetail?.asset.specification }}</span></li>
           <li>添加数量:<span>{{ monitorDetail?.asset.quantity }}</span></li>

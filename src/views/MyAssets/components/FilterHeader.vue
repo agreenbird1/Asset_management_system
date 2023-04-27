@@ -52,6 +52,12 @@ const filterOptions = [
     value: 3,
     iconColor: '#a0a7bb',
   },
+  {
+    icon: HourglassOutline,
+    label: '已报废',
+    value: 4,
+    iconColor: '#a0a7bb',
+  },
 ]
 
 const myStatus = useVModel(props, 'modelValue', emits)

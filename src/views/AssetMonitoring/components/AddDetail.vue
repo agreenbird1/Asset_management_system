@@ -9,6 +9,11 @@
         <ul>
           <li>资产编码: <span>{{ monitorDetail?.asset.serialNumber }}</span></li>
           <li>规格型号:<span>{{ monitorDetail?.asset.specification }}</span></li>
+          <li>添加数量:<span>{{ monitorDetail?.asset.quantity }}</span></li>
+          <li>单个金额:<span>{{ monitorDetail?.asset.amount }}</span></li>
+          <li>存放位置:<span>{{ monitorDetail?.asset.location }}</span></li>
+          <li>所属分类:<span>{{ monitorDetail?.asset.category.name }}</span></li>
+          <li>添加人:<span>{{ monitorDetail?.handleUser.userName }}</span></li>
         </ul>
       </section>
     </div>

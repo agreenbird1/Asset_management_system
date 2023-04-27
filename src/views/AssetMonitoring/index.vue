@@ -1,38 +1,23 @@
 <template>
   <div class="asset-monitoring">
     <div class="search-header">
-      <n-input
-        v-model:value="searchInfo.applyUserName"
-        type="text"
-        placeholder="申请人"
-        size="small"
-        autocomplete="none"
-      />
-      <n-input
-        v-model:value="searchInfo.handleUserName"
-        type="text"
-        placeholder="处理人"
-        size="small"
-        aria-autocomplete="none"
-      />
-      <n-input
-        v-model:value="searchInfo.assetName"
-        type="text"
-        placeholder="资产名称"
-        size="small"
-        autocomplete="none"
-      />
+      <n-input v-model:value="searchInfo.applyUserName" type="text" placeholder="申请人" size="small" autocomplete="none" />
+      <n-input v-model:value="searchInfo.handleUserName" type="text" placeholder="处理人" size="small"
+        aria-autocomplete="none" />
+      <n-input v-model:value="searchInfo.assetName" type="text" placeholder="资产名称" size="small" autocomplete="none" />
       <n-button color="#6a83d0" size="small" @click="initData"> 查询 </n-button>
     </div>
-    <n-data-table
-      class="table"
-      remote
-      :columns="columns"
-      :loading="loading"
-      :data="data"
-      :pagination="pagination"
-      :bordered="false"
-    />
+    <n-data-table class="table" remote :columns="columns" :loading="loading" :data="data" :pagination="pagination"
+      :bordered="false" />
+    <Dialog v-model="detailVisible" title="详情">
+      <!-- type: 1 | 2 | 3 | 4 | 5 // 新增 领用 维修 退还 报废 -->
+      <AddDetail v-if="monitorDetail?.type == 1" />
+      <ApplyDetail v-if="monitorDetail?.type == 2" />
+      <MaintenanceDetail v-if="monitorDetail?.type == 3" />
+      <ReturnDetail v-if="monitorDetail?.type == 4" />
+      <ScrapDetail v-if="monitorDetail?.type == 5" />
+      <template #footer></template>
+    </Dialog>
   </div>
 </template>
 
@@ -40,8 +25,14 @@
 import MonitorApi, { IMonitor, IMonitorSearch } from '@/api/monitor'
 import { MONITOR_TYPE } from '@/config/common';
 import dayjs from 'dayjs'
+import Dialog from "@/components/Dialog/index"
 import { DataTableColumns, NButton, PaginationProps } from 'naive-ui'
-import { h, reactive, ref } from 'vue'
+import { h, provide, reactive, ref } from 'vue'
+import AddDetail from "./components/AddDetail.vue"
+import ApplyDetail from "./components/ApplyDetail.vue"
+import MaintenanceDetail from "./components/MaintenanceDetail.vue"
+import ReturnDetail from "./components/ReturnDetail.vue"
+import ScrapDetail from "./components/ScrapDetail.vue"
 
 const searchInfo = ref<IMonitorSearch>({
   assetName: '',
@@ -49,6 +40,9 @@ const searchInfo = ref<IMonitorSearch>({
   handleUserName: '',
   pageNum: 1,
 })
+const detailVisible = ref(false)
+const monitorDetail = ref<IMonitor>()
+provide('monitorDetail', monitorDetail)
 
 const columns = ref<DataTableColumns<IMonitor>>([
   {
@@ -84,8 +78,13 @@ const columns = ref<DataTableColumns<IMonitor>>([
   {
     title: '操作',
     key: 'option',
-    render() {
-      return h(NButton, { color: '#6a83d0', size: 'small' }, () => '详情')
+    render(row) {
+      return h(NButton, {
+        color: '#6a83d0', size: 'small', onClick: () => {
+          monitorDetail.value = row
+          detailVisible.value = true
+        }
+      }, () => '详情')
     },
   },
 ])
@@ -125,17 +124,20 @@ initData()
   display: flex;
   flex-direction: column;
 }
+
 .search-header {
   padding: 10px;
   background-color: #fff;
   border-radius: 10px;
   margin-bottom: 20px;
+
   .n-input {
     display: inline-block;
     width: unset;
     margin-right: 10px;
   }
 }
+
 .n-data-table {
   flex: 1;
   border-radius: 15px;

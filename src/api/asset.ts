@@ -1,6 +1,7 @@
 import { useUserStore } from '@/store/userStore'
 import request, { ListInfo, PageInfo } from './request'
 import pinia from '@/store/index'
+import { ICategory } from './category'
 
 const userStore = useUserStore(pinia)
 
@@ -16,6 +17,7 @@ export type IAsset = {
   purchaseTime?: Date
   serialNumber?: string
   status: 0 | 1
+  category: ICategory
 }
 
 export interface IAssetSearch extends PageInfo {

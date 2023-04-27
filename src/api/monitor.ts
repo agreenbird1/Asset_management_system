@@ -1,3 +1,4 @@
+import { IMaintenance } from './maintenance'
 import { IUser } from './user'
 import request, { ListInfo } from './request'
 import { IAsset } from './asset'
@@ -9,6 +10,7 @@ export type IMonitor = {
   applyUser: IUser
   handleUser: IUser
   asset: IAsset
+  maintenance: IMaintenance
 }
 
 export type IMonitorSearch = {

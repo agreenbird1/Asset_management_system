@@ -5,13 +5,13 @@
         <div class="state">
           <label>状态：</label>
           <span
-            :class="{ active: searchInfo.state == 1 }"
-            @click="searchInfo.state = 1"
+            :class="{ active: searchInfo.state == 0 }"
+            @click="searchInfo.state = 0"
             >待处理</span
           >
           <span
-            :class="{ active: searchInfo.state == 2 }"
-            @click="searchInfo.state = 2"
+            :class="{ active: searchInfo.state == 1 }"
+            @click="searchInfo.state = 1"
             >已处理</span
           >
         </div>
@@ -31,26 +31,29 @@
 </template>
 
 <script setup lang="ts">
-import { DataTableColumns, NButton, NImage, useMessage } from 'naive-ui'
+import { DataTableColumns, NImage } from 'naive-ui'
 import { computed, h, reactive, ref, watch } from 'vue'
 import dayjs from 'dayjs'
-import MaintenanceAsset from './components/MaintenanceAsset.vue'
+import Finish from './components/Finish.vue'
+import Scrap from './components/Scrap.vue'
+import { MaintenanceApi } from '@/api/maintenance'
+import { IMaintenance } from '@/api/maintenance'
 
 interface ISearchInfo {
   pageNum: number
-  state: 1 | 2
+  state: 1 | 0
 }
 
 const searchInfo = ref<ISearchInfo>({
   pageNum: 1,
-  state: 1,
+  state: 0,
 })
 
 const data = ref<any[]>([])
 const loading = ref(false)
 
-const columns = computed<DataTableColumns<any>>(() => {
-  const columns: DataTableColumns<any> = [
+const columns = computed<DataTableColumns<IMaintenance>>(() => {
+  const columns: DataTableColumns<IMaintenance> = [
     {
       title: '资产/物品',
       key: 'asset.name',
@@ -78,29 +81,33 @@ const columns = computed<DataTableColumns<any>>(() => {
     },
     {
       title: '申请人',
-      key: 'user.userName',
+      key: 'applyUser.userName',
     },
     {
       title: '报修日期',
       key: 'applyTime',
       render(row) {
-        return h(
-          'span',
-          {},
-          dayjs(row.createTime).format('YYYY-MM-DD HH:mm:ss')
-        )
+        return h('span', {}, dayjs(row.applyTime).format('YYYY-MM-DD HH:mm:ss'))
       },
     },
   ]
-  if (searchInfo.value.state == 1) {
+  if (searchInfo.value.state == 0) {
     columns.push({
       title: '操作',
       key: 'option',
       render(row) {
         return [
-          h(MaintenanceAsset, { apply: row, onFlush: initData }),
-          h(MaintenanceAsset, { apply: row, onFlush: initData }),
+          h(Finish, { maintenance: row, onFlush: initData }),
+          h(Scrap, { maintenance: row, onFlush: initData, class: 'ml-10' }),
         ]
+      },
+    })
+  } else {
+    columns.push({
+      title: '状态',
+      key: '状态',
+      render(row) {
+        return h('span', {}, row.apply.myStatus == 4 ? '已报废' : '已维修')
       },
     })
   }
@@ -119,11 +126,11 @@ const pagination = reactive({
 const initData = () => {
   loading.value = true
   const { state, pageNum } = searchInfo.value
-  // ApplyApi.getApprovalApplies(state, pageNum)
-  //   .then((res) => {
-  //     data.value = res.data.list
-  //   })
-  //   .finally(() => (loading.value = false))
+  MaintenanceApi.get(pageNum, state)
+    .then((res) => {
+      data.value = res.data.list
+    })
+    .finally(() => (loading.value = false))
 }
 
 watch(() => searchInfo.value, initData, { immediate: true, deep: true })

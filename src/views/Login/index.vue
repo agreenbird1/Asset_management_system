@@ -261,16 +261,18 @@ onUnmounted(() => clearInterval(timeInterval))
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      width: 100px;
+      width: 160px;
+      height: 50px;
 
       &:hover {
-        background-color: rgba(174, 168, 168, 0.1);
+        background-color: rgba(56, 51, 51, 0.2);
       }
-
-      text-align: center;
       backdrop-filter: blur(3px);
-      background-color: rgba(106, 103, 103, 0.1);
+      background-color: rgba(58, 54, 54, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 100px;
       box-shadow: 2px 2px 2px rgb(0 0 0 / 10%);

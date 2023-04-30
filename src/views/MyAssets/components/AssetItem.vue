@@ -38,6 +38,7 @@ defineEmits(['flush'])
 .ass-item-wrapper {
   display: flex;
   cursor: pointer;
+  height: 180px;
 
   section {
     flex-grow: 1;

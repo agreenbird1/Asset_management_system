@@ -3,7 +3,7 @@
     <div class="app-header-left">
       <img src="@/assets/favicon.ico" alt="" />
       <p class="app-name">固定资产管理</p>
-      <div class="search-wrapper">
+      <div class="search-wrapper" v-show="false">
         <input
           class="search-input"
           type="text"
@@ -39,8 +39,8 @@
       </div>
     </div>
     <div class="app-header-right">
-      <NotificationButton />
-      <span class="time ml-20">December，26</span>
+      <!-- <NotificationButton /> -->
+      <span class="time ml-20">{{ date }}</span>
     </div>
   </header>
 </template>
@@ -49,10 +49,12 @@
 import NotificationButton from './NotificationButton.vue'
 import { ref, watch } from 'vue'
 import { asideAuthority } from '@/config/authority'
+import dayjs from 'dayjs'
 
 const showOptions = ref(false)
 const searchText = ref('')
 const routes = ref([...asideAuthority])
+const date = dayjs().format('YYYY-MM-DD')
 
 watch(
   () => searchText.value,

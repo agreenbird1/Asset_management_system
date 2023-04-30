@@ -141,7 +141,7 @@ const initData = () => {
     .then((res) => {
       pagination.itemCount = res.data.total
       data.value = res.data.list
-      console.log('MonitorApi', res.data.list)
+      pagination.page = searchInfo.value.pageNum
     })
     .finally(() => (loading.value = false))
 }

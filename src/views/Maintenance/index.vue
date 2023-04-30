@@ -129,6 +129,7 @@ const initData = () => {
   MaintenanceApi.get(pageNum, state)
     .then((res) => {
       data.value = res.data.list
+      pagination.page = searchInfo.value.pageNum
     })
     .finally(() => (loading.value = false))
 }

@@ -63,6 +63,10 @@ const columns = computed<DataTableColumns<IMaintenance>>(() => {
       key: 'asset.specification',
     },
     {
+      title: '商品单价',
+      key: 'asset.amount',
+    },
+    {
       title: '报修图片',
       key: 'picture',
       render(row) {

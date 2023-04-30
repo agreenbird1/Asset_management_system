@@ -43,7 +43,7 @@ const confirmReject = () => {
     rejectReason: reason.value,
     approveUserId: userStore.userInfo?.id,
     approveTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    status: 2,
+    status: 3,
   }).then(() => {
     window.$message.success('操作成功！')
     dialogVisible.value = false

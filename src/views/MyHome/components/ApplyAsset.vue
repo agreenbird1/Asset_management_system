@@ -26,10 +26,15 @@
             </div>
           </section>
           <n-empty
+            v-else
             style="width: 300px; height: 150px"
             description="暂无可以申请的资产！"
           ></n-empty>
-          <n-pagination v-if="data.length" v-model:page="searchInfo.pageNum" :item-count="total">
+          <n-pagination
+            v-if="data.length"
+            v-model:page="searchInfo.pageNum"
+            :item-count="total"
+          >
             <template #prefix> 共{{ total }}项 </template>
           </n-pagination>
         </main>
@@ -87,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import AssetItem from './AssetItem.vue'
 import Dialog from '@/components/Dialog/index.vue'
 import { CategoryApi, ICategory } from '@/api/category'
@@ -159,7 +164,7 @@ const initData = () => {
   })
 }
 
-initData()
+watch(() => searchInfo.value.pageNum, initData, { immediate: true })
 
 CategoryApi.getCategory(1).then((res) => {
   treeData.value = res.data

@@ -69,6 +69,10 @@ const columns = ref<DataTableColumns<IAsset>>([
     key: 'quantity',
   },
   {
+    title: '可用数量',
+    key: 'surplusQuantity',
+  },
+  {
     title: '单价',
     key: 'amount',
   },

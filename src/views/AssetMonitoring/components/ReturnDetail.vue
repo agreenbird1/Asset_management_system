@@ -1,15 +1,34 @@
 <template>
   <div class="return-detail">
     <div class="ass-item-wrapper">
-      <img :src="monitorDetail?.asset.picture" width="120" height="120" alt="" />
+      <img
+        :src="monitorDetail?.asset.picture"
+        width="120"
+        height="120"
+        alt=""
+      />
       <section class="ml-5">
         <ul>
-          <li>资产名称: <span>{{ monitorDetail?.asset.name }}</span></li>
-          <li>资产编码: <span>{{ monitorDetail?.asset.serialNumber }}</span></li>
-          <li>规格型号:<span>{{ monitorDetail?.asset.specification }}</span></li>
-          <li>退还人:<span>{{ monitorDetail?.applyUser.userName }}</span></li>
-          <li>退还时间:<span>{{ monitorDetail?.createTime }}</span></li>
-          <li>资产使用时间:<span>{{ monitorDetail?.createTime }}</span></li>
+          <li>
+            资产名称: <span>{{ monitorDetail?.asset.name }}</span>
+          </li>
+          <li>
+            资产编码: <span>{{ monitorDetail?.asset.serialNumber }}</span>
+          </li>
+          <li>
+            规格型号:<span>{{ monitorDetail?.asset.specification }}</span>
+          </li>
+          <li>
+            退还人:<span>{{ monitorDetail?.applyUser.userName }}</span>
+          </li>
+          <li>
+            退还时间:<span>{{
+              dayjs(monitorDetail?.createTime).format('YYYY-MM-DD  HH:mm:ss')
+            }}</span>
+          </li>
+          <li>
+            资产使用时间:<span>{{ monitorDetail?.useTime }}天</span>
+          </li>
         </ul>
       </section>
     </div>
@@ -17,14 +36,14 @@
 </template>
 
 <script setup lang="ts">
-import { IMonitor } from '@/api/monitor';
-import { inject, Ref } from 'vue';
+import { IMonitor } from '@/api/monitor'
+import dayjs from 'dayjs'
+import { inject, Ref } from 'vue'
 
 const monitorDetail = inject<Ref<IMonitor>>('monitorDetail')
 </script>
 
 <style scoped lang="less">
-
 .ass-item-wrapper {
   display: flex;
   cursor: pointer;

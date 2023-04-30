@@ -16,6 +16,7 @@
           <li>规格型号:<span>{{ asset.asset.specification }}</span></li>
           <li>签收时间:<span>{{ asset.signTime }}</span></li>
           <li v-if="asset.myStatus == 3">退还时间:<span>{{ asset.returnTime }}</span></li>
+          <li v-if="asset.myStatus == 4">报废时间:<span>{{ asset.scrapTime }}</span></li>
           <li>处理人:<span>{{ asset.approveUser.userName }}</span></li>
         </ul>
       </section>

@@ -25,7 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import { CheckmarkSharp, Hammer, HourglassOutline } from '@vicons/ionicons5'
+import {
+  CheckmarkSharp,
+  Hammer,
+  HourglassOutline,
+  Close,
+} from '@vicons/ionicons5'
 import { useVModel } from '@vueuse/core'
 
 const props = defineProps<{
@@ -53,10 +58,10 @@ const filterOptions = [
     iconColor: '#a0a7bb',
   },
   {
-    icon: HourglassOutline,
+    icon: Close,
     label: '已报废',
     value: 4,
-    iconColor: '#a0a7bb',
+    iconColor: 'red',
   },
 ]
 

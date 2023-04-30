@@ -1,23 +1,17 @@
 <template>
   <div class="app-sidebar">
-    <n-popover
+    <router-link
       v-for="(item, i) in permissions"
       :key="i"
-      trigger="hover"
-      placement="right"
-      :show-arrow="false"
+      :to="{ path: item.route }"
+      class="app-sidebar-link"
+      :class="{ active: $route.path == item.route }"
     >
-      <template #trigger>
-        <router-link
-          :to="{ path: item.route }"
-          class="app-sidebar-link"
-          :class="{ active: $route.path == item.route }"
-        >
-          <n-icon :component="item.icon" size="25" :depth="1" />
-        </router-link>
-      </template>
-      <span>{{ item.label }}</span>
-    </n-popover>
+      <div class="df w100">
+        <n-icon :component="item.icon" size="25" :depth="1" />
+        <span class="ml-5">{{ item.label }}</span>
+      </div>
+    </router-link>
   </div>
 </template>
 
@@ -42,7 +36,7 @@ const permissions = computed(() =>
   align-items: center;
 }
 .active {
-  background-color: var(--link-color-hover);
+  background-color: var(--link-color-hover) !important;
 }
 
 .app-sidebar-link {
@@ -50,16 +44,19 @@ const permissions = computed(() =>
   color: var(--link-color);
   margin: 5px 0;
   transition: 0.2s;
-  border-radius: 50%;
+  border-radius: 10px;
+  background-color: #fff;
   flex-shrink: 0;
-  width: 40px;
+  width: 150px;
   height: 40px;
+  padding-left: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
 
   &:hover {
     background-color: var(--link-color-hover);
+    color: #fff;
     i {
       color: var(--link-color-active);
     }

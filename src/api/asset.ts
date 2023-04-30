@@ -23,6 +23,7 @@ export type IAsset = {
 export interface IAssetSearch extends PageInfo {
   name?: string
   categoryId?: number
+  isApply?: boolean
 }
 
 export class AssetsApi {

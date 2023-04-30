@@ -15,7 +15,7 @@
         />
         <!-- 加载条 -->
         <main class="fl1 pl-10">
-          <section class="modal-section mb-10">
+          <section v-if="data.length" class="modal-section mb-10">
             <div v-for="item in data" :key="item.id" class="item-wrapper">
               <AssetItem :asset="item" />
               <n-checkbox
@@ -25,8 +25,11 @@
               />
             </div>
           </section>
-
-          <n-pagination v-model:page="searchInfo.pageNum" :item-count="total">
+          <n-empty
+            style="width: 300px; height: 150px"
+            description="暂无可以申请的资产！"
+          ></n-empty>
+          <n-pagination v-if="data.length" v-model:page="searchInfo.pageNum" :item-count="total">
             <template #prefix> 共{{ total }}项 </template>
           </n-pagination>
         </main>
@@ -149,7 +152,8 @@ const confirmApply = () => {
 }
 
 const initData = () => {
-  AssetsApi.getAssets(searchInfo.value).then((res) => {
+  // 申请处需要隔离未启用的商品
+  AssetsApi.getAssets({ ...searchInfo.value, isApply: true }).then((res) => {
     data.value = res.data.list
     total.value = res.data.total
   })

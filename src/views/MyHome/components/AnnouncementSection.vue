@@ -1,11 +1,12 @@
 <template>
-  <div class="announcement-section">
+  <div v-if="announcement?.title" class="announcement-section">
     <p class="title">{{ announcement?.title }}</p>
     <section class="content">{{ announcement?.content }} —— {{ announcement?.userName }}</section>
     <div v-if="announcement?.picture" style="text-align: center">
       <n-image :src="announcement?.picture" width="280" height="180"></n-image>
     </div>
   </div>
+  <n-empty class="announcement-section" v-else description="暂无公告！" />
 </template>
 
 <script setup lang="ts">
@@ -16,7 +17,6 @@ const announcement = ref<IAnnouncement>()
 
 AnnouncementApi.getAnnouncement().then((res) => {
   announcement.value = res.data
-  console.log(res.data)
 })
 </script>
 

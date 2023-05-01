@@ -23,7 +23,7 @@
       <slot></slot>
       <template #footer>
         <!-- 底部，具有默认的确认失败按钮。外部传入时候会顶替原有 footer slot 内容 -->
-        <div class="default-footer">
+        <div v-if="showDefaultFooter" class="default-footer">
           <slot name="footer">
             <n-button class="ml-10" color="#6a83d0" @click="emits('confirm')">
               确认
@@ -45,9 +45,11 @@ const props = withDefaults(
     title?: string
     width?: string
     modelValue: boolean
+    showDefaultFooter?: boolean
   }>(),
   {
     width: '700px',
+    showDefaultFooter: true,
   }
 )
 const emits = defineEmits(['update:modelValue', 'confirm', 'cancel', 'close'])

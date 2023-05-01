@@ -18,6 +18,14 @@ export type IAsset = {
   serialNumber?: string
   status: 0 | 1
   category: ICategory
+  surplusQuantity: number
+  useTimes: number
+  maintenanceNumber: number
+  scrapNumber: number
+  maintenanceValue: number
+  scrapValue: number
+  depreciationValue: number
+  currentValue: number
 }
 
 export interface IAssetSearch extends PageInfo {

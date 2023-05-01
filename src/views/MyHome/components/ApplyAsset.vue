@@ -20,7 +20,7 @@
               <AssetItem :asset="item" />
               <n-checkbox
                 :checked="item.checked"
-                :on-update:checked="() => checkAssetItem(item)"
+                :on-update:checked="(checked:boolean) => checkAssetItem(item,checked)"
                 size="small"
               />
             </div>
@@ -131,15 +131,16 @@ const selectNode = (ids: number[]) => {
   searchInfo.value.categoryId = ids[0]
   initData()
 }
-const checkAssetItem = (item: CheckedAsset) => {
+const checkAssetItem = (item: CheckedAsset, checked: boolean) => {
   if (checkedItems.value.length > 5)
     return message.warning('一次最多申请五件物品！')
   const index = checkedItems.value.findIndex((i) => i.id == item.id)
+  item.checked = checked
   if (index == -1) checkedItems.value.push(item)
   else checkedItems.value.splice(index, 1)
 }
 const removeCheckedItem = (index: number) => {
-  checkedItems.value.splice(index, 1)
+  checkedItems.value.splice(index, 1)[0].checked = false
   checkedItems.value.length == 0 && (drawerVisible.value = false)
 }
 const confirmApply = () => {
@@ -160,7 +161,14 @@ const initData = () => {
   // 申请处需要隔离未启用的商品
   AssetsApi.getAssets({ ...searchInfo.value, isApply: true }).then((res) => {
     data.value = res.data.list
+    // 翻页重置
     total.value = res.data.total
+    data.value.forEach((asset) => {
+      const item = checkedItems.value.find(
+        (checkedItem) => checkedItem.id == asset.id
+      )
+      if (item) asset.checked = true
+    })
   })
 }
 

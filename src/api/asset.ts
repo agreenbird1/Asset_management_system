@@ -47,4 +47,7 @@ export class AssetsApi {
   static updateAsset(id: number, status: 0 | 1) {
     return request.patch(`/asset/${id}`, { status })
   }
+  static updateAssetAll(param: Partial<IAsset>) {
+    return request.post(`/asset/update/${param.id}`, param)
+  }
 }

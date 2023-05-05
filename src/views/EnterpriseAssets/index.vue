@@ -87,6 +87,7 @@ const columns = ref<DataTableColumns<IAsset>>([
   {
     title: '操作',
     key: 'actions',
+    width: '200px',
     render(row) {
       return h('div', { class: 'df' }, [
         h(
@@ -105,7 +106,11 @@ const columns = ref<DataTableColumns<IAsset>>([
           () => (row.status == 0 ? '启用' : '停用')
         ),
         h(DetailButton, { asset: row, class: 'ml-5' }),
-        h(UpdateButton, { asset: row, class: 'ml-5' }),
+        h(UpdateButton, {
+          asset: row,
+          class: 'ml-5',
+          'onUpdate-asset': initData,
+        }),
       ])
     },
   },

@@ -72,8 +72,6 @@ const props = defineProps<{
   asset: IAsset
 }>()
 
-console.log(props.asset)
-
 const dialogVisible = ref(false)
 </script>
 

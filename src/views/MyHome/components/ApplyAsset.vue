@@ -15,18 +15,26 @@
         />
         <!-- 加载条 -->
         <main class="fl1 pl-10">
-          <section class="modal-section mb-10">
+          <section v-if="data.length" class="modal-section mb-10">
             <div v-for="item in data" :key="item.id" class="item-wrapper">
               <AssetItem :asset="item" />
               <n-checkbox
                 :checked="item.checked"
-                :on-update:checked="() => checkAssetItem(item)"
+                :on-update:checked="(checked:boolean) => checkAssetItem(item,checked)"
                 size="small"
               />
             </div>
           </section>
-
-          <n-pagination v-model:page="searchInfo.pageNum" :item-count="total">
+          <n-empty
+            v-else
+            style="width: 300px; height: 150px"
+            description="暂无可以申请的资产！"
+          ></n-empty>
+          <n-pagination
+            v-if="data.length"
+            v-model:page="searchInfo.pageNum"
+            :item-count="total"
+          >
             <template #prefix> 共{{ total }}项 </template>
           </n-pagination>
         </main>
@@ -84,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import AssetItem from './AssetItem.vue'
 import Dialog from '@/components/Dialog/index.vue'
 import { CategoryApi, ICategory } from '@/api/category'
@@ -123,15 +131,16 @@ const selectNode = (ids: number[]) => {
   searchInfo.value.categoryId = ids[0]
   initData()
 }
-const checkAssetItem = (item: CheckedAsset) => {
+const checkAssetItem = (item: CheckedAsset, checked: boolean) => {
   if (checkedItems.value.length > 5)
     return message.warning('一次最多申请五件物品！')
   const index = checkedItems.value.findIndex((i) => i.id == item.id)
+  item.checked = checked
   if (index == -1) checkedItems.value.push(item)
   else checkedItems.value.splice(index, 1)
 }
 const removeCheckedItem = (index: number) => {
-  checkedItems.value.splice(index, 1)
+  checkedItems.value.splice(index, 1)[0].checked = false
   checkedItems.value.length == 0 && (drawerVisible.value = false)
 }
 const confirmApply = () => {
@@ -149,13 +158,21 @@ const confirmApply = () => {
 }
 
 const initData = () => {
-  AssetsApi.getAssets(searchInfo.value).then((res) => {
+  // 申请处需要隔离未启用的商品
+  AssetsApi.getAssets({ ...searchInfo.value, isApply: true }).then((res) => {
     data.value = res.data.list
+    // 翻页重置
     total.value = res.data.total
+    data.value.forEach((asset) => {
+      const item = checkedItems.value.find(
+        (checkedItem) => checkedItem.id == asset.id
+      )
+      if (item) asset.checked = true
+    })
   })
 }
 
-initData()
+watch(() => searchInfo.value.pageNum, initData, { immediate: true })
 
 CategoryApi.getCategory(1).then((res) => {
   treeData.value = res.data

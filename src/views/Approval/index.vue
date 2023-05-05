@@ -141,6 +141,7 @@ const initData = () => {
   ApplyApi.getApprovalApplies(state, pageNum)
     .then((res) => {
       data.value = res.data.list
+      pagination.page = searchInfo.value.pageNum
     })
     .finally(() => (loading.value = false))
 }

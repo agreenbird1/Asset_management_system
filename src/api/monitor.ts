@@ -11,6 +11,7 @@ export type IMonitor = {
   handleUser: IUser
   asset: IAsset
   maintenance: IMaintenance
+  useTime: string
 }
 
 export type IMonitorSearch = {

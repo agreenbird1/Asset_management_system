@@ -9,7 +9,9 @@
           size="small"
           autocomplete="none"
         />
-        <n-button color="#6a83d0" size="small" @click="initData"> 查询 </n-button>
+        <n-button color="#6a83d0" size="small" @click="initData">
+          查询
+        </n-button>
       </div>
       <AddAssetButton @add-asset="initData" />
     </div>
@@ -41,6 +43,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { AssetsApi, IAsset, IAssetSearch } from '@/api/asset'
+import DetailButton from './components/DetailButton.vue'
 
 const message = useMessage()
 const columns = ref<DataTableColumns<IAsset>>([
@@ -69,6 +72,10 @@ const columns = ref<DataTableColumns<IAsset>>([
     key: 'quantity',
   },
   {
+    title: '可用数量',
+    key: 'surplusQuantity',
+  },
+  {
     title: '单价',
     key: 'amount',
   },
@@ -80,7 +87,7 @@ const columns = ref<DataTableColumns<IAsset>>([
     title: '操作',
     key: 'actions',
     render(row) {
-      return [
+      return h('div', { class: 'df' }, [
         h(
           NButton,
           {
@@ -88,17 +95,16 @@ const columns = ref<DataTableColumns<IAsset>>([
             secondary: true,
             color: row.status == 0 ? '#6a83d0' : 'red',
             onClick() {
-              AssetsApi.updateAsset(row.id!, row.status ? 0 : 1).then(
-                () => {
-                  message.success('更新成功！')
-                  initData()
-                }
-              )
+              AssetsApi.updateAsset(row.id!, row.status ? 0 : 1).then(() => {
+                message.success('更新成功！')
+                initData()
+              })
             },
           },
           () => (row.status == 0 ? '启用' : '停用')
         ),
-      ]
+        h(DetailButton, { asset: row, class: 'ml-5' }),
+      ])
     },
   },
 ])

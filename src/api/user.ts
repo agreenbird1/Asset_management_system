@@ -1,3 +1,4 @@
+import { ICategory } from './category';
 import { useUserStore } from '@/store/userStore'
 import request, { ListInfo, PageInfo } from './request'
 import pinia from "../store/index"
@@ -8,6 +9,7 @@ export interface IUser {
   password: string
   rePassword: string
   categoryId?: number
+  category?: ICategory
   description?: string
   avatar?: string
   phone: string

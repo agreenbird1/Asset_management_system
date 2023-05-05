@@ -11,7 +11,7 @@
         <Logout />
       </div>
     </div>
-    <p>中后台项目组</p>
+    <p>{{ userStore.userInfo?.category?.name }}</p>
     <p class="df aic">
       <span>个人简介：</span>
     <div class="fl1">

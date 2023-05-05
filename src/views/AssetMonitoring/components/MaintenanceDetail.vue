@@ -3,10 +3,8 @@
     <div class="ass-item-wrapper">
       <img :src="monitorDetail?.asset.picture" width="120" height="120" alt="" title="报修图片" />
       <section class="ml-5">
-        <p class="asset-name">
-          <span>{{ monitorDetail?.maintenance.picture }}</span>
-        </p>
         <ul>
+          <li>资产名称: <span>{{ monitorDetail?.asset.name }}</span></li>
           <li>资产编码: <span>{{ monitorDetail?.asset.serialNumber }}</span></li>
           <li>规格型号:<span>{{ monitorDetail?.asset.specification }}</span></li>
           <li>报修人:<span>{{ monitorDetail?.applyUser.userName }}</span></li>

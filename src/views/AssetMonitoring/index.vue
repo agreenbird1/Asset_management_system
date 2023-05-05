@@ -1,14 +1,39 @@
 <template>
   <div class="asset-monitoring">
     <div class="search-header">
-      <n-input v-model:value="searchInfo.applyUserName" type="text" placeholder="申请人" size="small" autocomplete="none" />
-      <n-input v-model:value="searchInfo.handleUserName" type="text" placeholder="处理人" size="small"
-        aria-autocomplete="none" />
-      <n-input v-model:value="searchInfo.assetName" type="text" placeholder="资产名称" size="small" autocomplete="none" />
+      <n-input
+        v-model:value="searchInfo.applyUserName"
+        type="text"
+        placeholder="申请人"
+        size="small"
+        autocomplete="none"
+      />
+      <n-input
+        v-model:value="searchInfo.handleUserName"
+        type="text"
+        placeholder="处理人"
+        size="small"
+        aria-autocomplete="none"
+      />
+      <n-input
+        v-model:value="searchInfo.assetName"
+        type="text"
+        placeholder="资产名称"
+        size="small"
+        autocomplete="none"
+      />
       <n-button color="#6a83d0" size="small" @click="initData"> 查询 </n-button>
     </div>
-    <n-data-table class="table" remote :columns="columns" :loading="loading" :data="data" :pagination="pagination"
-      :bordered="false" />
+    <n-data-table
+      class="table"
+      remote
+      :columns="columns"
+      :loading="loading"
+      :data="data"
+      :pagination="pagination"
+      :bordered="false"
+      flex-height
+    />
     <Dialog v-model="detailVisible" title="详情">
       <!-- type: 1 | 2 | 3 | 4 | 5 // 新增 领用 维修 退还 报废 -->
       <AddDetail v-if="monitorDetail?.type == 1" />
@@ -16,23 +41,23 @@
       <MaintenanceDetail v-if="monitorDetail?.type == 3" />
       <ReturnDetail v-if="monitorDetail?.type == 4" />
       <ScrapDetail v-if="monitorDetail?.type == 5" />
-      <template #footer></template>
+      <template #footer> <div></div> </template>
     </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import MonitorApi, { IMonitor, IMonitorSearch } from '@/api/monitor'
-import { MONITOR_TYPE } from '@/config/common';
+import { MONITOR_TYPE } from '@/config/common'
 import dayjs from 'dayjs'
-import Dialog from "@/components/Dialog/index"
+import Dialog from '@/components/Dialog/index.vue'
 import { DataTableColumns, NButton, PaginationProps } from 'naive-ui'
 import { h, provide, reactive, ref } from 'vue'
-import AddDetail from "./components/AddDetail.vue"
-import ApplyDetail from "./components/ApplyDetail.vue"
-import MaintenanceDetail from "./components/MaintenanceDetail.vue"
-import ReturnDetail from "./components/ReturnDetail.vue"
-import ScrapDetail from "./components/ScrapDetail.vue"
+import AddDetail from './components/AddDetail.vue'
+import ApplyDetail from './components/ApplyDetail.vue'
+import MaintenanceDetail from './components/MaintenanceDetail.vue'
+import ReturnDetail from './components/ReturnDetail.vue'
+import ScrapDetail from './components/ScrapDetail.vue'
 
 const searchInfo = ref<IMonitorSearch>({
   assetName: '',
@@ -79,29 +104,34 @@ const columns = ref<DataTableColumns<IMonitor>>([
     title: '操作',
     key: 'option',
     render(row) {
-      return h(NButton, {
-        color: '#6a83d0', size: 'small', onClick: () => {
-          monitorDetail.value = row
-          detailVisible.value = true
-        }
-      }, () => '详情')
+      return h(
+        NButton,
+        {
+          color: '#6a83d0',
+          size: 'small',
+          onClick: () => {
+            monitorDetail.value = row
+            detailVisible.value = true
+          },
+        },
+        () => '详情'
+      )
     },
   },
 ])
 const data = ref<IMonitor[]>([])
-const total = ref(0)
 const loading = ref(false)
 
 const pagination = reactive<PaginationProps>({
   page: searchInfo.value.pageNum,
   pageSize: 10,
-  itemCount: total.value,
+  itemCount: 0,
   onChange: (page: number) => {
     searchInfo.value.pageNum = page
     initData()
   },
   prefix({ itemCount }) {
-    return `总数：${total.value}`
+    return `总数：${itemCount}`
   },
 })
 
@@ -109,9 +139,9 @@ const initData = () => {
   loading.value = true
   MonitorApi.get(searchInfo.value)
     .then((res) => {
-      console.log(res)
-      total.value = res.data.total
+      pagination.itemCount = res.data.total
       data.value = res.data.list
+      pagination.page = searchInfo.value.pageNum
     })
     .finally(() => (loading.value = false))
 }

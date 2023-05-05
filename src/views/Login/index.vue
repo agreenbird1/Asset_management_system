@@ -24,8 +24,9 @@
         autocomplete="false"
       />
       <input type="password" placeholder="登录密码" @input="passwordChange" />
+      <span class="forget">若忘记密码，请联系管理员进行重置！</span>
       <button @click="login">登录</button>
-      <span @click="loginActive = false">取消</span>
+      <span class="cancel" @click="loginActive = false">取消</span>
     </div>
   </div>
 </template>
@@ -181,7 +182,12 @@ onUnmounted(() => clearInterval(timeInterval))
       cursor: pointer;
     }
 
-    span {
+    .forget {
+      color: #9c9a9a;
+      text-align: center;
+    }
+
+    .cancel {
       margin-top: 5px;
       font-size: 12px;
       color: #9c9a9a;

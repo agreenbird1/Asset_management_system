@@ -35,6 +35,7 @@
 import { ref, h, computed } from 'vue'
 import ClassifyTree from '@/components/ClassifyTree/ClassifyTree.vue'
 import AddAssetButton from './components/AddAssetButton.vue'
+import UpdateButton from './components/UpdateButton.vue'
 import {
   DataTableColumns,
   NButton,
@@ -104,6 +105,7 @@ const columns = ref<DataTableColumns<IAsset>>([
           () => (row.status == 0 ? '启用' : '停用')
         ),
         h(DetailButton, { asset: row, class: 'ml-5' }),
+        h(UpdateButton, { asset: row, class: 'ml-5' }),
       ])
     },
   },

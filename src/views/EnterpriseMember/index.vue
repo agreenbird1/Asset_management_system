@@ -53,9 +53,11 @@ import {
   PaginationProps,
   useMessage,
 } from 'naive-ui'
+import { useUserStore } from '@/store/userStore'
 
 const message = useMessage()
 const loading = ref(false)
+const userInfo = useUserStore()
 const columns = ref<DataTableColumns<IUser>>([
   {
     title: '头像',
@@ -77,10 +79,6 @@ const columns = ref<DataTableColumns<IUser>>([
   {
     title: '手机号',
     key: 'phone',
-  },
-  {
-    title: '密码',
-    key: 'password',
   },
   {
     title: '简介',
@@ -111,7 +109,7 @@ const columns = ref<DataTableColumns<IUser>>([
             disabled: true,
           },
         ],
-        disabled: row.role == 4,
+        disabled: row.role == 4 || userInfo.userInfo?.id == row.id,
         onUpdateValue(v: 1 | 2) {
           UserApi.changeUserRole(row.id!, v).then(initData)
         },
@@ -129,7 +127,7 @@ const columns = ref<DataTableColumns<IUser>>([
             size: 'small',
             secondary: true,
             color: row.status == 0 ? '#6a83d0' : 'red',
-            disabled: row.role == 4,
+            disabled: row.role == 4 || userInfo.userInfo?.id == row.id,
             onClick() {
               UserApi.changeUserStatus(row.id!, row.status ? 0 : 1).then(() => {
                 message.success('更新成功！')
@@ -146,7 +144,7 @@ const columns = ref<DataTableColumns<IUser>>([
             class: 'ml-5',
             secondary: true,
             type: 'error',
-            disabled: row.role == 4,
+            disabled: row.role == 4 || userInfo.userInfo?.id == row.id,
             onClick() {
               UserApi.deleteUser(row.id!).then(() => {
                 message.success('删除成功！')

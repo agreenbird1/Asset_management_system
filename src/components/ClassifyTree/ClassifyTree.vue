@@ -226,7 +226,10 @@ const suffix = ({ option }: { option: ICategory }) => [
       text: true,
       type: 'primary',
       color: '#6a83d0',
-      onClick: () => openAddDialog(option.id),
+      onClick: (e) => {
+        e.stopPropagation()
+        openAddDialog(option.id)
+      },
     },
     { default: () => '添加' }
   ),
@@ -236,7 +239,10 @@ const suffix = ({ option }: { option: ICategory }) => [
       text: true,
       type: 'warning',
       class: 'ml-10',
-      onClick: () => openUpdateDialog(option.name, option.id),
+      onClick: (e) => {
+        e.stopPropagation()
+        openUpdateDialog(option.name, option.id)
+      },
     },
     { default: () => '修改' }
   ),
@@ -246,7 +252,12 @@ const suffix = ({ option }: { option: ICategory }) => [
       text: true,
       type: 'error',
       class: 'ml-10',
-      onClick: () => openDeleteDialog(option.id),
+      onClick: (e) => {
+        e.stopPropagation()
+        if (option.children?.length)
+          return window.$message.error('请先删除子分类！')
+        openDeleteDialog(option.id)
+      },
     },
     { default: () => '删除' }
   ),

@@ -1,7 +1,7 @@
-import { ICategory } from './category';
+import { ICategory } from './category'
 import { useUserStore } from '@/store/userStore'
 import request, { ListInfo, PageInfo } from './request'
-import pinia from "../store/index"
+import pinia from '../store/index'
 
 export interface IUser {
   id?: number
@@ -39,8 +39,11 @@ export class UserApi {
     return request.post(`/user/status`, { status, id })
   }
 
-  static updateUser(param: Partial<IUser>) {
-    return request.patch(`/user/${userInfo?.id}`, param)
+  static updateUser(
+    param: Partial<IUser>,
+    id: number | undefined = userInfo?.id
+  ) {
+    return request.patch(`/user/${id}`, param)
   }
 
   static changeUserRole(id: number, role: 2 | 1) {

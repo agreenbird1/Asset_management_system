@@ -54,6 +54,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { useUserStore } from '@/store/userStore'
+import UpdateButton from './components/UpdateButton.vue'
 
 const message = useMessage()
 const loading = ref(false)
@@ -137,23 +138,12 @@ const columns = ref<DataTableColumns<IUser>>([
           },
           () => (row.status == 0 ? '启用' : '停用')
         ),
-        h(
-          NButton,
-          {
-            size: 'small',
-            class: 'ml-5',
-            secondary: true,
-            type: 'error',
-            disabled: row.role == 4 || userInfo.userInfo?.id == row.id,
-            onClick() {
-              UserApi.deleteUser(row.id!).then(() => {
-                message.success('删除成功！')
-                initData()
-              })
-            },
-          },
-          () => '删除'
-        ),
+        h(UpdateButton, {
+          user: row,
+          disabled: row.role == 4 && userInfo.userInfo?.id != row.id,
+          class: 'ml-5',
+          'onUpdate-user': initData,
+        }),
       ]
     },
   },

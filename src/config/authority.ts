@@ -29,7 +29,7 @@ export const asideAuthority: AsideAuthorityItem[] = [
     route: '/my-assets',
   },
   {
-    index: [1, 2],
+    index: [2],
     label: '维修处理',
     icon: BuildOutline,
     route: '/maintenance',

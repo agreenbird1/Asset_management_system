@@ -24,4 +24,8 @@ export class AnnouncementApi {
   static getAnnouncement() {
     return request.get<IAnnouncement>('/announcement')
   }
+
+  static clear(){
+    return request.delete('/announcement')
+  }
 }

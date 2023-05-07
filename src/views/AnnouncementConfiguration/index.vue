@@ -2,6 +2,9 @@
   <div class="announcement-configuration">
     <div class="button-wrapper">
       <n-button color="#6a83d0" @click="createAnnouncement">保存</n-button>
+      <n-button type="error" class="mr-5" @click="dialogVisible = true"
+        >清空公告</n-button
+      >
     </div>
     <n-form
       ref="formRef"
@@ -14,7 +17,11 @@
         <n-input v-model:value="formValue.title" placeholder="请输入标题" />
       </n-form-item>
       <n-form-item label="公告内容" path="content">
-        <n-input v-model:value="formValue.content" type="textarea" placeholder="请输入内容" />
+        <n-input
+          v-model:value="formValue.content"
+          type="textarea"
+          placeholder="请输入内容"
+        />
       </n-form-item>
 
       <n-form-item label="公告配图" path="picture">
@@ -27,24 +34,34 @@
         />
       </n-form-item>
     </n-form>
+    <Dialog
+      v-model="dialogVisible"
+      title="清空公告"
+      @cancel="dialogVisible = false"
+      @confirm="clearAnnouncement"
+    >
+      注意，清空公告后成员将不会看到任何公告信息！
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { AnnouncementApi, IAnnouncement } from '@/api/announcement'
 import { sendSingleFile } from '@/utils/uploadFiles'
+import Dialog from '@/components/Dialog/index.vue'
 import { FormInst, FormRules, UploadFileInfo } from 'naive-ui'
 import { ref } from 'vue'
 
 const formRef = ref<FormInst | null>(null)
 const originValue = {
-  title: '领取注意事项！',
-  content: '请宝子们申请资产后到资产所在存放位置进行资产领取！并在系统中确认收到！',
+  title: '',
+  content: '',
   picture: '',
 }
 const formValue = ref<IAnnouncement>({
   ...originValue,
 })
+const dialogVisible = ref(false)
 
 const rules: FormRules = {
   title: {
@@ -79,6 +96,11 @@ const createAnnouncement = () => {
     }
   })
 }
+const clearAnnouncement = () =>
+  AnnouncementApi.clear().then(() => {
+    window.$message.success('清空成功！')
+    dialogVisible.value = false
+  })
 </script>
 
 <style scoped lang="less">
@@ -88,7 +110,7 @@ const createAnnouncement = () => {
   width: 100%;
   height: 100%;
   padding: 20px;
-  .button-wrapper{
+  .button-wrapper {
     display: flex;
     flex-direction: row-reverse;
     margin-bottom: 10px;

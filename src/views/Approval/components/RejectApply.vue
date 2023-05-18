@@ -11,6 +11,7 @@
     <Dialog
       :model-value="dialogVisible"
       title="驳回申请"
+      @close="dialogVisible = false"
       @cancel="dialogVisible = false"
       @confirm="confirmReject"
     >

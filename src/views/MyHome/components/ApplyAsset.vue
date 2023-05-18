@@ -149,6 +149,7 @@ const confirmApply = () => {
     (res) => {
       if (res.success) {
         message.success('申请成功！')
+        checkedItems.value.forEach((i) => (i.checked = false))
         checkedItems.value = []
         requestModal.value = false
         emits('flush')

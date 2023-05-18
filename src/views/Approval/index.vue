@@ -23,6 +23,7 @@
           :data="data"
           :pagination="pagination"
           flex-height
+          remote
           style="height: 100%"
         />
       </div>
@@ -31,7 +32,12 @@
 </template>
 
 <script setup lang="ts">
-import { DataTableColumns, NButton, useMessage } from 'naive-ui'
+import {
+  DataTableColumns,
+  NButton,
+  useMessage,
+  PaginationProps,
+} from 'naive-ui'
 import { computed, h, reactive, ref, watch } from 'vue'
 import { ApplyApi, IApply } from '@/api/apply'
 import dayjs from 'dayjs'
@@ -115,23 +121,20 @@ const columns = computed<DataTableColumns<IApply>>(() => {
         title: '处理人',
         key: 'approveUser',
         render(apply) {
-          return h(
-            'span',
-            {},
-            apply.approveUser?.userName
-          )
+          return h('span', {}, apply.approveUser?.userName)
         },
       }
     )
 
   return columns
 })
-const pagination = reactive({
+const pagination = reactive<PaginationProps>({
   page: searchInfo.value.pageNum,
   pageSize: 10,
   onChange: (page: number) => {
     searchInfo.value.pageNum = page
     pagination.page = page
+    initData()
   },
 })
 
@@ -142,11 +145,19 @@ const initData = () => {
     .then((res) => {
       data.value = res.data.list
       pagination.page = searchInfo.value.pageNum
+      pagination.itemCount = res.data.total
     })
     .finally(() => (loading.value = false))
 }
 
-watch(() => searchInfo.value, initData, { immediate: true, deep: true })
+watch(
+  () => searchInfo.value.state,
+  () => {
+    searchInfo.value.pageNum = 1
+    initData()
+  },
+  { immediate: true, deep: true }
+)
 </script>
 
 <style scoped lang="less">

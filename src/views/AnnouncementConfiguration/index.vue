@@ -26,6 +26,7 @@
 
       <n-form-item label="公告配图" path="picture">
         <n-upload
+          ref="uploadRef"
           :on-update:file-list="uploadFiles"
           list-type="image-card"
           :default-upload="false"
@@ -61,6 +62,7 @@ const originValue = {
 const formValue = ref<IAnnouncement>({
   ...originValue,
 })
+const uploadRef = ref()
 const dialogVisible = ref(false)
 
 const rules: FormRules = {
@@ -91,6 +93,7 @@ const createAnnouncement = () => {
         formValue.value = {
           ...originValue,
         }
+        uploadRef.value?.clear()
         formRef.value?.restoreValidation()
       })
     }

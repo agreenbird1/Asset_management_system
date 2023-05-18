@@ -11,6 +11,7 @@
     <Dialog
       :model-value="dialogVisible"
       title="同意申请"
+      @close="dialogVisible = false"
       @cancel="dialogVisible = false"
       @confirm="confirmResolve"
     >

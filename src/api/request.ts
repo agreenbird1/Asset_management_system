@@ -4,6 +4,7 @@ import {
   requestType,
   requestMethod,
 } from '../types/axios'
+import router from '@/router'
 
 const service = axios.create({
   timeout: 5000,
@@ -23,13 +24,21 @@ service.interceptors.request.use(
   }
 )
 
-service.interceptors.response.use((res) => {
-  if (res.data.success) return res.data
-  else {
-    Promise.reject(res.data)
-    window.$message.error(res.data.message)
+service.interceptors.response.use(
+  (res) => {
+    if (res.data.success) return res.data
+    else {
+      Promise.reject(res.data)
+      window.$message.error(res.data.message)
+    }
+  },
+  (rej) => {
+    if (rej.response.status == 401) {
+      window.$message.error('登录过期，请重新登录')
+      router.push('/login')
+    }
   }
-})
+)
 
 const request: requestType & requestMethod = (url, method, data, config) => {
   return service({

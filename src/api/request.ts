@@ -9,7 +9,6 @@ import router from '@/router'
 const service = axios.create({
   timeout: 5000,
   baseURL: import.meta.env.VITE_APP_BASEURL,
-  withCredentials: true,
 })
 
 service.interceptors.request.use(

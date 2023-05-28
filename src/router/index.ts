@@ -56,6 +56,12 @@ const router = createRouter({
           component: () =>
             import('@/views/AnnouncementConfiguration/index.vue'),
         },
+        {
+          path: 'statistics',
+          name: 'Statistics',
+          component: () =>
+            import('@/views/AssetMonitoring/AssetStatistics.vue'),
+        },
       ],
       beforeEnter(to) {
         if (to.path !== '/login' && !userStore.userInfo) {

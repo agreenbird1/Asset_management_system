@@ -1,5 +1,6 @@
 <template>
   <div class="asset-monitoring">
+    <router-view></router-view>
     <div class="search-header">
       <n-input
         v-model:value="searchInfo.applyUserName"
@@ -23,6 +24,14 @@
         autocomplete="none"
       />
       <n-button color="#6a83d0" size="small" @click="initData"> 查询 </n-button>
+      <n-button
+        color="#6a83d0"
+        class="ml-5"
+        size="small"
+        @click="$router.push({ name: 'Statistics' })"
+      >
+        统计
+      </n-button>
     </div>
     <n-data-table
       class="table"

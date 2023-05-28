@@ -99,6 +99,7 @@ import { CategoryApi, ICategory } from '@/api/category'
 import { AssetsApi, IAsset, IAssetSearch } from '@/api/asset'
 import { useMessage } from 'naive-ui'
 import { ApplyApi } from '@/api/apply'
+import { throttle } from 'lodash'
 
 interface CheckedAsset extends IAsset {
   checked?: boolean
@@ -143,7 +144,7 @@ const removeCheckedItem = (index: number) => {
   checkedItems.value.splice(index, 1)[0].checked = false
   checkedItems.value.length == 0 && (drawerVisible.value = false)
 }
-const confirmApply = () => {
+const confirmApply = throttle(() => {
   if (!checkedItems.value.length) return message.warning('至少选择一件物品！')
   ApplyApi.createApply(checkedItems.value.map((item) => item.id!)).then(
     (res) => {
@@ -156,7 +157,7 @@ const confirmApply = () => {
       }
     }
   )
-}
+}, 1000)
 
 const initData = () => {
   // 申请处需要隔离未启用的商品

@@ -19,6 +19,7 @@ export type IMonitorSearch = {
   assetName: string
   applyUserName: string
   handleUserName: string
+  pageSize?: number
 }
 
 export default class MonitorApi {

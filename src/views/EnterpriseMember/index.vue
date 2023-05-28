@@ -179,6 +179,7 @@ const pagination = computed<PaginationProps>(() => ({
 
 const selectNode = (id?: number) => {
   searchInfo.value.categoryId = id
+  searchInfo.value.pageNum = 1
   initData()
 }
 

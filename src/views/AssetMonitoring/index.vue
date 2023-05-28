@@ -23,6 +23,14 @@
         size="small"
         autocomplete="none"
       />
+      <n-select
+        size="small"
+        class="select"
+        placeholder="操作类型"
+        v-model:value="searchInfo.type"
+        :options="options"
+        clearable
+      />
       <n-button color="#6a83d0" size="small" @click="initData"> 查询 </n-button>
       <n-button
         color="#6a83d0"
@@ -73,10 +81,21 @@ const searchInfo = ref<IMonitorSearch>({
   applyUserName: '',
   handleUserName: '',
   pageNum: 1,
+  type: undefined,
 })
 const detailVisible = ref(false)
 const monitorDetail = ref<IMonitor>()
 provide('monitorDetail', monitorDetail)
+const options: object[] = []
+for (const key in MONITOR_TYPE) {
+  if (Object.prototype.hasOwnProperty.call(MONITOR_TYPE, key)) {
+    const element = (MONITOR_TYPE as any)[key]
+    options.push({
+      value: key,
+      label: element,
+    })
+  }
+}
 
 const columns = ref<DataTableColumns<IMonitor>>([
   {
@@ -169,10 +188,15 @@ initData()
   background-color: #fff;
   border-radius: 10px;
   margin-bottom: 20px;
-
+  display: flex;
   .n-input {
     display: inline-block;
     width: unset;
+    margin-right: 10px;
+  }
+  .n-select {
+    display: inline-block;
+    width: 200px;
     margin-right: 10px;
   }
 }

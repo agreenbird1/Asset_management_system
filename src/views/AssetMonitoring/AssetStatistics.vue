@@ -63,7 +63,7 @@ const generateLineOptions = async () => {
   })
   const options = {
     title: {
-      text: '进七日资产流通记录折线图',
+      text: '近七日资产流通记录折线图',
     },
     tooltip: {
       trigger: 'axis',

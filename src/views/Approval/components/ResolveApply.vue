@@ -11,7 +11,7 @@
     <Dialog
       :model-value="dialogVisible"
       title="同意申请"
-      @close="dialogVisible = false"
+      @close="close"
       @cancel="dialogVisible = false"
       @confirm="confirmResolve"
     >
@@ -47,8 +47,14 @@ const confirmResolve = () => {
   }).then(() => {
     window.$message.success('操作成功！')
     dialogVisible.value = false
+    remark.value = ''
     emits('flush')
   })
+}
+
+const close = () => {
+  remark.value = ''
+  dialogVisible.value = false
 }
 </script>
 
